@@ -1,0 +1,3 @@
+<material>
+    <technique name="Techniques/RayScreen.xml" />
+</material>
