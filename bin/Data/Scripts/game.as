@@ -39,7 +39,7 @@ void Start()
 	Viewport@ mainVP = Viewport(scene_, camera);
     freelookCam@ flcam = cast<freelookCam>(cameraNode.CreateScriptObject(scriptFile, "freelookCam"));
     flcam.Init();
-	camera.farClip = 800;
+	camera.farClip = 1200;
 	
 	Node@ fooball = cameraNode.CreateChild("fooball");
 	fooball.position = Vector3(0.0f,0.0f,31.0f);
@@ -48,6 +48,13 @@ void Start()
 	Light@ fplight = fooball.CreateComponent("Light");
 	fplight.color = Color(1.3,0.8,0.6,1.0);
 	fplight.range = 15;
+	
+/*	Node@ fooPlaneNode = cameraNode.CreateChild("Plane");
+	fooPlaneNode.scale = Vector3(150.0f, 1.0f, 150.0f);
+	fooPlaneNode.rotation = Quaternion(-90.,0.,0.);
+	fooPlaneNode.position = Vector3(0.0f,-2.0f,100.0f);
+	StaticModel@ fooPlaneObject = fooPlaneNode.CreateComponent("StaticModel");
+	fooPlaneObject.model = cache.GetResource("Model", "Models/Plane.mdl");*/
 
 	renderer.viewports[0] = mainVP;
 	renderpath = mainVP.renderPath.Clone();

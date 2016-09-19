@@ -19,7 +19,7 @@
       <output index="3" name="depth" />
     </command>
 
-    <command type="lightvolumes" vs="DeferredLight" ps="DeferredLight">
+    <command type="lightvolumes" vs="DeferredLight" ps="DeferredLight" >
         <texture unit="albedo" name="albedo" />
         <texture unit="normal" name="normal" />
         <texture unit="depth" name="depth" />
