@@ -39,6 +39,9 @@ void Update(float timeStep)
             roll += 45 * timeStep;
         else
             roll = 0.0;
+			
+		if (input.keyDown['R'])
+           node.position = Vector3(0.,0.,0.);
 
 
 

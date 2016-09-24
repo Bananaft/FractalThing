@@ -9,9 +9,9 @@
 
 varying vec2 vScreenPos;
 varying vec3 vFarRay;
-//varying mat3 camMat;
 varying vec3 direction;
 varying mat4 cViewProjPS;
+varying float pxsz;
 
 
 void VS()
@@ -24,18 +24,18 @@ void VS()
     pos = pos * 2.0 -1.0;
     cViewProjPS = cViewProj;
     vec3 pos3 = vec3(pos,1.0) * cFrustumSize;
-
+    pxsz = cFrustumSize.y;
     direction = normalize(mat3(cView) * pos3);
 
 }
 
-vec3 calcNormal( in vec3 pos )
+vec3 calcNormal( in vec3 pos , float size )
 {
-	vec3 eps = vec3( 0.01,  0.0, 0.0 );
+	vec3 eps = vec3( size,  0.0, 0.0 );
 	vec3 nor = vec3(
-	    sdfmap(pos+eps.xyy) - sdfmap(pos-eps.xyy),
-	    sdfmap(pos+eps.yxy) - sdfmap(pos-eps.yxy),
-	    sdfmap(pos+eps.yyx) - sdfmap(pos-eps.yyx) );
+	    sdfmap2(pos+eps.xyy) - sdfmap2(pos-eps.xyy),
+	    sdfmap2(pos+eps.yxy) - sdfmap2(pos-eps.yxy),
+	    sdfmap2(pos+eps.yyx) - sdfmap2(pos-eps.yyx) );
 	return vec3(0.5)+normalize(nor);
 }
 
@@ -59,7 +59,7 @@ void PS()
    {
        intersection = origin + direction * totalDistance;
        //float s = sdfmap(intersection);
-       distance = sdfmap(intersection);
+       distance = sdfmap2(intersection);
        //texs = s.gba;
        totalDistance += distance;
        lfog += max(10.-distance,.0);
@@ -80,7 +80,7 @@ void PS()
 
   if (fdepth>depth) discard;
 
-  normal = calcNormal(intersection);
+  normal = calcNormal(intersection, (10000. * clpp.z) / (pxsz / cGBufferInvSize.y));
 
   float fog = pow(1.-fdepth,6.6);
 
