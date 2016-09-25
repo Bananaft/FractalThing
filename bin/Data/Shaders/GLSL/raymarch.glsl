@@ -11,7 +11,7 @@ varying vec2 vScreenPos;
 varying vec3 vFarRay;
 varying vec3 direction;
 varying mat4 cViewProjPS;
-varying float pxsz;
+varying float fov;
 
 
 void VS()
@@ -24,7 +24,7 @@ void VS()
     pos = pos * 2.0 -1.0;
     cViewProjPS = cViewProj;
     vec3 pos3 = vec3(pos,1.0) * cFrustumSize;
-    pxsz = cFrustumSize.y;
+    fov = atan(cFrustumSize.y/cFrustumSize.z);
     direction = normalize(mat3(cView) * pos3);
 
 }
@@ -76,11 +76,11 @@ void PS()
 
 
   float depth = DecodeDepth(texture2D(sDepthBuffer, vScreenPos).rgb);
-  float fdepth = clpp.z /cFarClipPS;
+  float fdepth = clpp.z /(cFarClipPS);
 
   if (fdepth>depth) discard;
 
-  normal = calcNormal(intersection, (10000. * clpp.z) / (pxsz / cGBufferInvSize.y));
+  normal = calcNormal(intersection, max((1.0 * clpp.z) / (fov / cGBufferInvSize.y),0.001));
 
   float fog = pow(1.-fdepth,6.6);
 
