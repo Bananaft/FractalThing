@@ -2,6 +2,8 @@
     <rendertarget name="albedo" sizedivisor="1 1" format="rgba" />
     <rendertarget name="normal" sizedivisor="1 1" format="rgba" />
     <rendertarget name="depth" sizedivisor="1 1" format="lineardepth" />
+    <rendertarget name="depth16" sizedivisor="64 64" format="lineardepth" filter="true" />
+    <rendertarget name="depth4" sizedivisor="4 4" format="lineardepth" filter="true" />
     <command type="clear" color="fog" depth="1.0" stencil="255" />
     <command type="clear" color="12000 0 0 0" output="depth" />
 
@@ -11,12 +13,19 @@
         <output index="2" name="normal" />
         <output index="3" name="depth" />
     </command>
+    <command type="quad" tag="premarch" vs="raymarch" ps="raymarch" psdefines="PREMARCH" output="depth16">
+      <parameter name="Divisor" value="16" />
+      <parameter name="RAY_STEPS" value="40" />
+    </command>
+
     <command type="quad" tag="raymarch" vs="raymarch" ps="raymarch" psdefines="DEFERRED">
       <texture unit="depth" name="depth" />
+      <texture unit="specular" name="depth16" />
       <output index="0" name="viewport" />
       <output index="1" name="albedo" />
       <output index="2" name="normal" />
       <output index="3" name="depth" />
+      <parameter name="RAY_STEPS" value="96" />
     </command>
 
     <command type="lightvolumes" vs="DeferredLight" ps="DeferredLight" >
