@@ -79,8 +79,8 @@ void PS()
   float fdepth = clpp.z /(cFarClipPS);
 
   if (fdepth>depth) discard;
-
-  normal = calcNormal(intersection, max((1.0 * clpp.z) / (fov / cGBufferInvSize.y),0.001));
+  //Normal softening powered by magic.
+  normal = calcNormal(intersection, max((clpp.z/400000.) * (fov / cGBufferInvSize.y),0.001));
 
   float fog = pow(1.-fdepth,6.6);
 
