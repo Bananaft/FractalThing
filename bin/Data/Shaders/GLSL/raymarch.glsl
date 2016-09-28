@@ -8,7 +8,6 @@
 //#define gl_FragData fragData
 
 uniform float cRAY_STEPS;
-uniform float cSizeDiv;
 
 varying vec2 vScreenPos;
 varying vec3 vFarRay;
@@ -55,9 +54,7 @@ void PS()
   float totalDistance = cNearClipPS;
   float lfog = 0.;
   float pxsz = fov * cGBufferInvSize.y;
-  #ifdef PREMARCH
-    pxsz *= cSizeDiv * 64 * 4;
-  #endif
+
   float distTrsh = 0.02;
 
   for(int i =0 ;  i < cRAY_STEPS; ++i) ////// Rendering main scene
@@ -67,7 +64,7 @@ void PS()
        distance = sdfmap2(intersection);
 
        #ifdef PREMARCH
-          distTrsh = pxsz * totalDistance/cFarClipPS;
+          distTrsh = pxsz * totalDistance * 1.3;
        #endif
        if(distance <= distTrsh || totalDistance >= cFarClipPS)
        {

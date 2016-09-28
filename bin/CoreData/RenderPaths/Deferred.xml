@@ -2,7 +2,7 @@
     <rendertarget name="albedo" sizedivisor="1 1" format="rgba" />
     <rendertarget name="normal" sizedivisor="1 1" format="rgba" />
     <rendertarget name="depth" sizedivisor="1 1" format="lineardepth" />
-    <rendertarget name="depth16" sizedivisor="64 64" format="lineardepth" filter="true" />
+    <rendertarget name="depth16" sizedivisor="8 8" format="lineardepth" filter="true" />
     <rendertarget name="depth4" sizedivisor="4 4" format="lineardepth" filter="true" />
     <command type="clear" color="fog" depth="1.0" stencil="255" />
     <command type="clear" color="12000 0 0 0" output="depth" />
@@ -14,7 +14,6 @@
         <output index="3" name="depth" />
     </command>
     <command type="quad" tag="premarch" vs="raymarch" ps="raymarch" psdefines="PREMARCH" output="depth16">
-      <parameter name="SizeDiv" value="64" />
       <parameter name="RAY_STEPS" value="60" />
     </command>
 
