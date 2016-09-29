@@ -10,10 +10,11 @@
 uniform float cRAY_STEPS;
 
 varying vec2 vScreenPos;
-varying vec3 vFarRay;
-varying vec3 direction;
+//varying vec3 direction;
 varying mat4 cViewProjPS;
 varying float fov;
+varying vec3 FrustumSizePS;
+varying mat4 ViewPS;
 
 
 void VS()
@@ -22,12 +23,15 @@ void VS()
     vec3 worldPos = GetWorldPos(modelMatrix);
     gl_Position = GetClipPos(worldPos);
     vec2 pos = GetScreenPosPreDiv(gl_Position);
-    vScreenPos = pos;
     pos = pos * 2.0 -1.0;
-    cViewProjPS = cViewProj;
+
+    vScreenPos = pos;
+    //cViewProjPS = cViewProj;
     vec3 pos3 = vec3(pos,1.0) * cFrustumSize;
     fov = atan(cFrustumSize.y/cFrustumSize.z);
-    direction = normalize(mat3(cView) * pos3);
+    FrustumSizePS = cFrustumSize;
+    ViewPS = cView;
+    //direction = normalize(mat3(cView) * pos3);
 
 }
 
@@ -45,7 +49,7 @@ vec3 calcNormal( in vec3 pos , float size )
 
 void PS()
 {
-
+  vec3 direction = normalize(mat3(ViewPS) * (vec3(vScreenPos,1.0) * FrustumSizePS)  );
   vec3 origin = cCameraPosPS;
   vec3 normal;
   vec3 intersection;
