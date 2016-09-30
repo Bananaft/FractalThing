@@ -23,7 +23,7 @@ void VS()
     vec3 worldPos = GetWorldPos(modelMatrix);
     gl_Position = GetClipPos(worldPos);
     vec2 pos = GetScreenPosPreDiv(gl_Position);
-    pos = pos * 2.0 -1.0;
+    pos = pos;
 
     vScreenPos = pos;
     //cViewProjPS = cViewProj;
@@ -49,12 +49,13 @@ vec3 calcNormal( in vec3 pos , float size )
 
 void PS()
 {
-  vec3 direction = normalize(mat3(ViewPS) * (vec3(vScreenPos,1.0) * FrustumSizePS)  );
+  vec3 locDir = normalize(vec3(vScreenPos * 2.0 -1.0,1.0) * FrustumSizePS);
+  vec3 direction = (mat3(ViewPS) * locDir  );
   vec3 origin = cCameraPosPS;
   vec3 normal;
   vec3 intersection;
   //vec3 direction = camMat * normalize( vec3(uv.xy,2.0) );
-  float PREdepth = texture2D(sSpecMap, vScreenPos).r;
+  float PREdepth =  texture2D(sSpecMap, vScreenPos).r;
 
   float distance = 0.;
   float totalDistance = PREdepth;// * cFarClipPS;
@@ -84,7 +85,7 @@ void PS()
    #ifndef PREMARCH
 
      vec4 clpp = vec4(intersection,1.0) * cViewProjPS;
-     float fdepth = clpp.z /(cFarClipPS);
+     float fdepth = (totalDistance*locDir.z)/cFarClipPS; //clpp.z /(cFarClipPS);
 
 
       vec3 diffColor = vec3(0.5 + sin(intersection.y * 0.6) * 0.3,0.6 + sin(intersection.z * 0.2) * 0.3,1.0);
