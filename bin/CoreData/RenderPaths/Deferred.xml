@@ -18,24 +18,24 @@
         <output index="3" name="depth" />
     </command>
 
-    <!--command type="quad" tag="premarch" vs="raymarch" ps="raymarch" psdefines="PREMARCH" output="depth4">
+    <command type="quad" tag="premarch" vs="raymarch" ps="raymarch" psdefines="PREMARCH" output="depth4">
       <parameter name="RAY_STEPS" value="100" />
     </command>
 
     <command type="quad" tag="premarch" vs="raymarch" ps="raymarch" psdefines="PREMARCH" output="depth3">
       <texture unit="specular" name="depth4" />
-      <parameter name="RAY_STEPS" value="200" />
+      <parameter name="RAY_STEPS" value="100" />
     </command>
 
     <command type="quad" tag="premarch" vs="raymarch" ps="raymarch" psdefines="PREMARCH" output="depth2">
       <texture unit="specular" name="depth3" />
-      <parameter name="RAY_STEPS" value="100" />
+      <parameter name="RAY_STEPS" value="200" />
     </command>
 
     <command type="quad" tag="premarch" vs="raymarch" ps="raymarch" psdefines="PREMARCH" output="depth1">
       <texture unit="specular" name="depth2" />
       <parameter name="RAY_STEPS" value="100" />
-    </command-->
+    </command>
 
     <command type="quad" tag="raymarch" vs="raymarch" ps="raymarch" psdefines="DEFERRED">
       <texture unit="depth" name="depth" />
