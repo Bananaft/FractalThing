@@ -31,7 +31,7 @@ void Start()
 	lightNode.direction = Vector3(0.6f, -1.0f, 0.8f); // The direction vector does not need to be normalized
 	Light@ light = lightNode.CreateComponent("Light");
 	light.lightType = LIGHT_DIRECTIONAL;
-	light.color = Color(0.2f,0.1f,0.4f,1.0);
+	light.color = Color(0.2f,0.1f,0.4f,1.0) * 0.01;
 
 	Node@ cameraNode = scene_.CreateChild("CamNode");
 	cameraNode.position = Vector3(0.0f , 14.0f , -20.0f);
@@ -59,10 +59,12 @@ void Start()
 	renderer.viewports[0] = mainVP;
 	renderpath = mainVP.renderPath.Clone();
 
-	//renderer.hdrRendering = true;
+	renderer.hdrRendering = true;
 
 
 	renderpath.Load(cache.GetResource("XMLFile","RenderPaths/Deferred.xml"));
+	renderpath.Append(cache.GetResource("XMLFile","PostProcess/AutoExposure.xml"));
+	renderpath.Append(cache.GetResource("XMLFile","PostProcess/BloomHDR.xml"));
 	renderer.viewports[0].renderPath = renderpath;
 
 
@@ -85,7 +87,7 @@ void Start()
 	   plightNode.position = Vector3(500-Random(1000),500-Random(1000),500-Random(1000));
 		Light@ plight = plightNode.CreateComponent("Light");
 		//light.lightType = LIGHT_DIRECTIONAL;
-		plight.color = Color(0.2+Random(1.0f),0.2+Random(1.0f),0.2+Random(1.0f),1.0);
+		plight.color = Color(0.2+Random(1.0f),0.2+Random(1.0f),0.2+Random(1.0f),1.0) * (0.6 + Random(16.0f));
 		plight.range = 15 + Random(50);
 	}
 

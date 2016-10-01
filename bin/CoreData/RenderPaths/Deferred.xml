@@ -44,7 +44,7 @@
       <output index="1" name="albedo" />
       <output index="2" name="normal" />
       <output index="3" name="depth" />
-      <parameter name="RAY_STEPS" value="40" />
+      <parameter name="RAY_STEPS" value="30" />
     </command>
 
     <command type="lightvolumes" vs="DeferredLight" ps="DeferredLight" >

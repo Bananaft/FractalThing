@@ -30,6 +30,11 @@ void VS()
     vScreenPos = GetScreenPosPreDiv(gl_Position);
 }
 
+vec3 ScreenBlend( vec3 a, vec3 b )
+{
+ return 1 - ( 1 - a ) * ( 1 - b );
+}
+
 void PS()
 {
     #ifdef BRIGHT
@@ -67,7 +72,25 @@ void PS()
 
     #ifdef COMBINE2
     vec3 color = texture2D(sDiffMap, vScreenPos).rgb * cBloomHDRMix.x;
+
+    float white = 8.;
+    //  color *= (1.0 + color / white) / (1.0 + color);
+    float L = 0.2126 * color.r + 0.7152 * color.g + 0.0722 * color.g;
+    float nL = (1.0 + L / white) / (1.0 + L);;
+    float scale = nL / L;
+    color *= nL;
+    color = pow(color,vec3( 1/2.2 ));
+
+
+
+
+    // vec3 x = max(vec3(0.0),color-vec3(0.004)); // Filmic Curve
+    // color = (x*(6.2*color+.5))/(x*(6.2*x+1.7)+0.06);
+
     vec3 bloom = texture2D(sNormalMap, vTexCoord).rgb * cBloomHDRMix.y;
-    gl_FragColor = vec4(color + bloom, 1.0);
+    //bloom = bloom/(1+bloom);
+    color = ScreenBlend(clamp(color,0,1), bloom);
+
+    gl_FragColor = vec4(color, 1.0);//pow(color,vec3( 1/2.2 ))
     #endif
 }

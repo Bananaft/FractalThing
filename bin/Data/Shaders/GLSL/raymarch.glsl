@@ -89,7 +89,7 @@ void PS()
      float fdepth = (totalDistance*locDir.z)/cFarClipPS; //clpp.z /(cFarClipPS);
 
 
-      vec3 diffColor = vec3(0.5 + sin(intersection.y * 0.6) * 0.3,0.6 + sin(intersection.z * 0.2) * 0.3,1.0);
+      vec3 diffColor =vec3(0.5); //vec3(0.5 + sin(intersection.y * 0.6) * 0.3,0.6 + sin(intersection.z * 0.2) * 0.3,1.0);
 
       vec3 ambient = diffColor.rgb;
 
@@ -107,7 +107,7 @@ void PS()
 
   //gl_FragColor = vec4(ambient , 1.0);
   #ifndef PREMARCH
-    gl_FragData[0] = vec4(vec3(0.3) * (1.-fog),1.0);
+    gl_FragData[0] = vec4(0.);//vec4(vec3(0.3) * (1.-fog),1.0);
     gl_FragData[1] = vec4(diffColor.rgb * fog, 1.7 );
     //gl_FragData[0] = vec4(float(stps)/256,0.,0.,0.);//vec4(float(stps)/cRAY_STEPS,0.,0.,0.);//vec4(mimus , plus,0.,0.); //vec4(vec3(0.3) * (1.-fog),1.0);
     //gl_FragData[1] = vec4(0.);//vec4(diffColor.rgb * fog, 1.7 );
