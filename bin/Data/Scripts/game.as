@@ -27,11 +27,11 @@ void Start()
 	fakeboxObject.model = cache.GetResource("Model", "Models/Box.mdl");
 	
 
-	Node@ lightNode = scene_.CreateChild("DirectionalLight");
-	lightNode.direction = Vector3(0.6f, -1.0f, 0.8f); // The direction vector does not need to be normalized
-	Light@ light = lightNode.CreateComponent("Light");
-	light.lightType = LIGHT_DIRECTIONAL;
-	light.color = Color(0.2f,0.1f,0.4f,1.0) * 0.01;
+	//Node@ lightNode = scene_.CreateChild("DirectionalLight");
+	//lightNode.direction = Vector3(0.6f, -1.0f, 0.8f); // The direction vector does not need to be normalized
+	//Light@ light = lightNode.CreateComponent("Light");
+	//light.lightType = LIGHT_DIRECTIONAL;
+	//light.color = Color(0.2f,0.1f,0.4f,1.0) * 0.01;
 
 	Node@ cameraNode = scene_.CreateChild("CamNode");
 	cameraNode.position = Vector3(0.0f , 14.0f , -20.0f);
@@ -42,12 +42,19 @@ void Start()
 	camera.farClip = 1200;
 	
 	Node@ fooball = cameraNode.CreateChild("fooball");
-	fooball.position = Vector3(0.0f,0.0f,31.0f);
+	fooball.position = Vector3(0.0f,-4.0f,10.0f);
 	StaticModel@ ballModel = fooball.CreateComponent("StaticModel");
 	ballModel.model = cache.GetResource("Model", "Models/Sphere.mdl");
 	Light@ fplight = fooball.CreateComponent("Light");
 	fplight.color = Color(1.3,0.8,0.6,1.0);
 	fplight.range = 15;
+	
+	Node@ spotNode = fooball.CreateChild("spotNode");
+	Light@ splight = fooball.CreateComponent("Light");
+	splight.color = Color(1.9,2.8,3.6,1.0);
+	splight.lightType = LIGHT_SPOT;
+	splight.fov = 10.;
+	splight.range = 250;
 	
 /*	Node@ fooPlaneNode = cameraNode.CreateChild("Plane");
 	fooPlaneNode.scale = Vector3(150.0f, 1.0f, 150.0f);
@@ -84,11 +91,11 @@ void Start()
 	   for (int i=0; i<1600; i++)
 	{
 	   Node@ plightNode = scene_.CreateChild("pointlight");
-	   plightNode.position = Vector3(500-Random(1000),500-Random(1000),500-Random(1000));
+	   plightNode.position = Vector3(1500-Random(3000),1500-Random(3000),1500-Random(3000));
 		Light@ plight = plightNode.CreateComponent("Light");
 		//light.lightType = LIGHT_DIRECTIONAL;
 		plight.color = Color(0.2+Random(1.0f),0.2+Random(1.0f),0.2+Random(1.0f),1.0) * (0.6 + Random(16.0f));
-		plight.range = 15 + Random(50);
+		plight.range = 15 + Random(100);
 	}
 
 

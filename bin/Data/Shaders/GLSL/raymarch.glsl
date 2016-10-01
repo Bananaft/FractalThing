@@ -43,7 +43,29 @@ vec3 calcNormal( in vec3 pos , float size )
 	    sdfmap2(pos+eps.xyy) - sdfmap2(pos-eps.xyy),
 	    sdfmap2(pos+eps.yxy) - sdfmap2(pos-eps.yxy),
 	    sdfmap2(pos+eps.yyx) - sdfmap2(pos-eps.yyx) );
-	return vec3(0.5)+normalize(nor);
+	return normalize(nor);
+}
+
+float calcAO( in vec3 pos, in vec3 nor )
+{
+	float occ = 0.0;
+  float stp = 0.1;
+
+  for( int i=1; i<4; i++ )
+    {
+        stp *= i * 2.;
+        vec3 aopos =  nor * stp + pos;
+        float dd = sdfmap2( aopos );
+        occ += dd;
+        //if (dd<stp) break;
+    }
+
+    //occ += sdfmap2(pos + nor * 0.1);
+    //occ += sdfmap2(pos + nor * 2.0);
+    //occ += sdfmap2(pos + nor * 10.0);
+    //occ += sdfmap2(pos + nor * 50.0);
+
+    return min(pow(occ * 0.3,2.0),1.0);
 }
 
 
@@ -64,6 +86,7 @@ void PS()
 
   float distTrsh = 0.002;
   int stps = 0;
+
 
   for(int i =0 ;  i < cRAY_STEPS; ++i) ////// Rendering main scene
    {
@@ -101,20 +124,20 @@ void PS()
       //float plus = max( 10. * (fdepth - PREdepth), 0.0 );
       //Normal softening powered by magic.
       normal = calcNormal(intersection, max(pow(totalDistance,1.25) * pxsz,0.001));
-
-      float fog = pow(1.-fdepth,6.6);
+      float ao = calcAO(intersection,normal);
+      float fog = pow(fdepth,1.6);
   #endif
 
   //gl_FragColor = vec4(ambient , 1.0);
   #ifndef PREMARCH
-    gl_FragData[0] = vec4(0.);//vec4(vec3(0.3) * (1.-fog),1.0);
-    gl_FragData[1] = vec4(diffColor.rgb * fog, 1.7 );
+    gl_FragData[0] = vec4(0.02 * fog);//vec4(vec3(0.3) * (1.-fog),1.0);
+    gl_FragData[1] = vec4(diffColor.rgb * (1.-fog) * ao, ao );
     //gl_FragData[0] = vec4(float(stps)/256,0.,0.,0.);//vec4(float(stps)/cRAY_STEPS,0.,0.,0.);//vec4(mimus , plus,0.,0.); //vec4(vec3(0.3) * (1.-fog),1.0);
     //gl_FragData[1] = vec4(0.);//vec4(diffColor.rgb * fog, 1.7 );
 
 
 
-    gl_FragData[2] = vec4(normal, 1.0);// * 0.5 + 0.5
+    gl_FragData[2] = vec4(0.5 + normal*0.5, 4.1);// * 0.5 + 0.5
     gl_FragData[3] = vec4(EncodeDepth(fdepth), 0.0);//
   #else
     gl_FragColor =  vec4(totalDistance ,0. , 0. , 0.);
