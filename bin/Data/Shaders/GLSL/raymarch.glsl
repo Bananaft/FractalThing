@@ -49,17 +49,15 @@ vec3 calcNormal( in vec3 pos , float size )
 float calcAO( in vec3 pos, in vec3 nor )
 {
 	float occ = 0.0;
-  float stp = 0.2;
-  float olddd = 0.;
-  for( int i=1; i<5; i++ )
-    {
+  float stp = 0.1;
 
+  for( int i=1; i<4; i++ )
+    {
+        stp *= i * 2.;
         vec3 aopos =  nor * stp + pos;
         float dd = sdfmap2( aopos );
         occ += dd;
-
-        if (dd<=0.01) break;
-        stp += dd * 4.;
+        //if (dd<stp) break;
     }
 
     //occ += sdfmap2(pos + nor * 0.1);
@@ -67,7 +65,7 @@ float calcAO( in vec3 pos, in vec3 nor )
     //occ += sdfmap2(pos + nor * 10.0);
     //occ += sdfmap2(pos + nor * 50.0);
 
-    return occ;
+    return min(occ * 0.3,1.);
 }
 
 
