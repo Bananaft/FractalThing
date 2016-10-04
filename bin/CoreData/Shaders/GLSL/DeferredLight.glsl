@@ -75,7 +75,7 @@ void PS()
     vec3 lightColor;
     vec3 lightDir;
 
-    float diff = GetDiffuse(normal, worldPos, lightDir);
+    float diff = GetDiffuse(normal, worldPos, lightDir, normalInput.a);
 
     #ifdef SHADOW
         diff *= GetShadowDeferred(projWorldPos, normal, depth);
@@ -92,7 +92,7 @@ void PS()
     #endif
 
     #ifdef SPECULAR
-        float spec = GetSpecular(normal, eyeVec, lightDir, normalInput.a * 255.0);
+        float spec = GetSpecular(normal, eyeVec, lightDir, 0.7 * 255.0);
         gl_FragColor = diff * vec4(lightColor * (albedoInput.rgb + spec * cLightColor.a * albedoInput.aaa), 0.0);
     #else
         gl_FragColor = diff * vec4(lightColor * albedoInput.rgb, 0.0);

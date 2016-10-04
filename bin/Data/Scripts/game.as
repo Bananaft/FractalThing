@@ -22,7 +22,7 @@ void Start()
 	planeObject.model = cache.GetResource("Model", "Models/Plane.mdl");
 	
 	Node@ fakeboxNode = scene_.CreateChild("Plane");
-	fakeboxNode.scale = Vector3(6000.0f, 6000.0f, 6000.0f);
+	fakeboxNode.scale = Vector3(20000.0f, 20000.0f, 20000.0f);
 	StaticModel@ fakeboxObject = fakeboxNode.CreateComponent("StaticModel");
 	fakeboxObject.model = cache.GetResource("Model", "Models/Box.mdl");
 	
@@ -91,7 +91,7 @@ void Start()
 	   for (int i=0; i<1600; i++)
 	{
 	   Node@ plightNode = scene_.CreateChild("pointlight");
-	   plightNode.position = Vector3(1500-Random(3000),1500-Random(3000),1500-Random(3000));
+	   plightNode.position = Vector3(500-Random(1000),1500-Random(3000),500-Random(1000));
 		Light@ plight = plightNode.CreateComponent("Light");
 		//light.lightType = LIGHT_DIRECTIONAL;
 		plight.color = Color(0.2+Random(1.0f),0.2+Random(1.0f),0.2+Random(1.0f),1.0) * (0.6 + Random(16.0f));
