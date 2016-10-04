@@ -124,7 +124,7 @@ float GetDiffuse(vec3 normal, vec3 worldPos, out vec3 lightDir, float ao)
             float hd = 0.5 * dist;
             float hl = pow(dot(normal, lightDir)*0.5+0.5,2.);
             float lamb = dot(normal, lightDir);
-            float diff = max(mix(lamb,hl, dist) * pow(dist,3.6-1.6*ao), 0.0);
+            float diff = max(mix(lamb,hl,min(dist *1.15,1.)) * pow(dist,3.6-1.6*ao), 0.0);
             //float halfdiff = max(pow(dot(normal, lightDir)*0.5+0.5,2.) * pow(max(1-lightDist,0),12.), 0.0);
             return diff;
         #endif

@@ -8,6 +8,7 @@
     varying vec2 vScreenPos;
 #else
     varying vec4 vScreenPos;
+    varying vec4 vScreenLpos;
 #endif
 varying vec3 vFarRay;
 #ifdef ORTHO
@@ -27,6 +28,7 @@ void VS()
         #endif
     #else
         vScreenPos = GetScreenPos(gl_Position);
+        vScreenLpos = vec4(GetClipPos(cLightPos.xyz).xy,gl_Position.xy);
         vFarRay = GetFarRay(gl_Position) * gl_Position.w;
         #ifdef ORTHO
             vNearRay = GetNearRay(gl_Position) * gl_Position.w;
@@ -76,6 +78,8 @@ void PS()
     vec3 lightDir;
 
     float diff = GetDiffuse(normal, worldPos, lightDir, normalInput.a);
+    float vol = max(2. - length(vScreenLpos.ba-vScreenLpos.xy),0. );
+    diff += vol;
 
     #ifdef SHADOW
         diff *= GetShadowDeferred(projWorldPos, normal, depth);
@@ -93,7 +97,7 @@ void PS()
 
     #ifdef SPECULAR
         float spec = GetSpecular(normal, eyeVec, lightDir, 0.7 * 255.0);
-        gl_FragColor = diff * vec4(lightColor * (albedoInput.rgb + spec * cLightColor.a * albedoInput.aaa), 0.0);
+        gl_FragColor =  diff * vec4(lightColor * (albedoInput.rgb + spec * cLightColor.a * albedoInput.aaa), 0.0);
     #else
         gl_FragColor = diff * vec4(lightColor * albedoInput.rgb, 0.0);
     #endif
