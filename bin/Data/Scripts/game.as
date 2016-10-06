@@ -45,9 +45,9 @@ void Start()
 	fooball.position = Vector3(0.0f,-4.0f,10.0f);
 	StaticModel@ ballModel = fooball.CreateComponent("StaticModel");
 	ballModel.model = cache.GetResource("Model", "Models/Sphere.mdl");
-	Light@ fplight = fooball.CreateComponent("Light");
-	fplight.color = Color(1.3,0.8,0.6,1.0);
-	fplight.range = 15;
+	//Light@ fplight = fooball.CreateComponent("Light");
+	//fplight.color = Color(1.3,0.8,0.6,1.0);
+	//fplight.range = 15;
 	
 	Node@ spotNode = fooball.CreateChild("spotNode");
 	Light@ splight = fooball.CreateComponent("Light");
@@ -88,7 +88,7 @@ void Start()
 	SubscribeToEvent("Update", "HandleUpdate");
 	SubscribeToEvent("PostRenderUpdate", "HandlePostRenderUpdate");
 
-	   for (int i=0; i<1600; i++)
+	   for (int i=0; i<300; i++)
 	{
 	   Node@ plightNode = scene_.CreateChild("pointlight");
 	   plightNode.position = Vector3(500-Random(1000),1500-Random(3000),500-Random(1000));
