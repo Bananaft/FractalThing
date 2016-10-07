@@ -49,12 +49,12 @@ void Start()
 	//fplight.color = Color(1.3,0.8,0.6,1.0);
 	//fplight.range = 15;
 	
-	Node@ spotNode = fooball.CreateChild("spotNode");
-	Light@ splight = fooball.CreateComponent("Light");
-	splight.color = Color(1.9,2.8,3.6,1.0);
-	splight.lightType = LIGHT_SPOT;
-	splight.fov = 10.;
-	splight.range = 250;
+	//Node@ spotNode = fooball.CreateChild("spotNode");
+	//Light@ splight = fooball.CreateComponent("Light");
+	//splight.color = Color(1.9,2.8,3.6,1.0);
+	//splight.lightType = LIGHT_SPOT;
+	//splight.fov = 10.;
+	//splight.range = 250;
 	
 /*	Node@ fooPlaneNode = cameraNode.CreateChild("Plane");
 	fooPlaneNode.scale = Vector3(150.0f, 1.0f, 150.0f);
@@ -88,7 +88,7 @@ void Start()
 	SubscribeToEvent("Update", "HandleUpdate");
 	SubscribeToEvent("PostRenderUpdate", "HandlePostRenderUpdate");
 
-	   for (int i=0; i<300; i++)
+	   for (int i=0; i<800; i++)
 	{
 	   Node@ plightNode = scene_.CreateChild("pointlight");
 	   plightNode.position = Vector3(500-Random(1000),1500-Random(3000),500-Random(1000));

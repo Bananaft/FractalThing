@@ -104,7 +104,7 @@ vec4 GetShadowPos(int index, vec3 normal, vec4 projWorldPos)
 #endif
 
 #ifdef COMPILEPS
-float GetDiffuse(vec3 normal, vec3 worldPos, out vec3 lightDir, float ao, out float lightDist)
+float GetDiffuse(vec3 normal, vec3 worldPos, out vec3 lightDir, float ao)
 {
     #ifdef DIRLIGHT
         lightDir = cLightDirPS;
@@ -115,7 +115,7 @@ float GetDiffuse(vec3 normal, vec3 worldPos, out vec3 lightDir, float ao, out fl
         #endif
     #else
         vec3 lightVec = (cLightPosPS.xyz - worldPos) * cLightPosPS.w;
-        lightDist = length(lightVec);
+        float lightDist = length(lightVec);
         lightDir = lightVec / lightDist;
         #ifdef TRANSLUCENT
             return abs(dot(normal, lightDir)) * texture2D(sLightRampMap, vec2(lightDist, 0.0)).r;
