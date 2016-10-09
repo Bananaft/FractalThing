@@ -83,7 +83,8 @@ void PS()
     float lightDist;
     float diff = GetDiffuse(normal, worldPos, lightDir, normalInput.a);
     float vol =max(1. - length(vScreenLpos.xyz-normalize(vFarRay)) * vScreenLpos.w * cLightPosPS.w,0. );// max(10. - length(vScreenLpos.xy),0. );// max(2. - length(vScreenLpos.ba-vScreenLpos.xy),0. );
-    float volzclip = clamp( (depth * 12000. - vScreenLpos.w)*cLightPosPS.w, 0. , 1.);
+    //THIS THING SHOULD BE MOVED TO VS
+    float volzclip = clamp( (length(eyeVec) - vScreenLpos.w)*cLightPosPS.w, 0. , 1.) *  clamp(pow((vScreenLpos.w - 1.1/cLightPosPS.w)*0.003,2.2),0.,1.);
     vol = volzclip * pow(vol,5.);
 
     #ifdef SHADOW
@@ -102,7 +103,7 @@ void PS()
 
     #ifdef SPECULAR
         float spec = GetSpecular(normal, eyeVec, lightDir, 0.7 * 255.0);
-        gl_FragColor = vec4(vol * lightColor * 0.1,0.) + diff * vec4(lightColor * (albedoInput.rgb + spec * cLightColor.a * albedoInput.aaa), 0.0);
+        gl_FragColor =vec4( vol * lightColor * 0.1,0.) + diff * vec4(lightColor * (albedoInput.rgb + spec * cLightColor.a * albedoInput.aaa), 0.0);
     #else
         gl_FragColor = diff * vec4(lightColor * albedoInput.rgb, 0.0);
     #endif
