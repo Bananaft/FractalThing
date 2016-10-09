@@ -40,9 +40,9 @@ vec3 calcNormal( in vec3 pos , float size )
 {
 	vec3 eps = vec3( size,  0.0, 0.0 );
 	vec3 nor = vec3(
-	    sdfmap2(pos+eps.xyy) - sdfmap2(pos-eps.xyy),
-	    sdfmap2(pos+eps.yxy) - sdfmap2(pos-eps.yxy),
-	    sdfmap2(pos+eps.yyx) - sdfmap2(pos-eps.yyx) );
+	    sdfmap2(pos+eps.xyy).w - sdfmap2(pos-eps.xyy).w,
+	    sdfmap2(pos+eps.yxy).w - sdfmap2(pos-eps.yxy).w,
+	    sdfmap2(pos+eps.yyx).w - sdfmap2(pos-eps.yyx).w );
 	return normalize(nor);
 }
 
@@ -55,7 +55,7 @@ float calcAO( in vec3 pos, in vec3 nor )
     {
         stp *= i * 2.;
         vec3 aopos =  nor * stp + pos;
-        float dd = sdfmap2( aopos );
+        float dd = sdfmap2( aopos ).w;
         occ += dd;
         //if (dd<stp) break;
     }
@@ -79,7 +79,7 @@ void PS()
   //vec3 direction = camMat * normalize( vec3(uv.xy,2.0) );
   float PREdepth =  texture2D(sSpecMap, vScreenPos).r;
 
-  float distance = 0.;
+  vec4 distance = vec4(0.);
   float totalDistance = PREdepth;// * cFarClipPS;
   float lfog = 0.;
   float pxsz = fov * cGBufferInvSize.y;
@@ -93,13 +93,13 @@ void PS()
        intersection = origin + direction * totalDistance;
 
        distance = sdfmap2(intersection);
-      totalDistance += distance;
+      totalDistance += distance.w;
        #ifdef PREMARCH
           distTrsh = pxsz * totalDistance * 1.4142;
           totalDistance -= distTrsh;
-          if(distance <= distTrsh || totalDistance >= cFarClipPS) break;
+          if(distance.w <= distTrsh || totalDistance >= cFarClipPS) break;
         #else
-          if(distance <= 0.002 || totalDistance >= cFarClipPS) break;
+          if(distance.w <= 0.002 || totalDistance >= cFarClipPS) break;
        #endif
 
 
@@ -112,8 +112,10 @@ void PS()
      //vec4 clpp = vec4(intersection,1.0) * cViewProjPS;
      float fdepth = (totalDistance*locDir.z)/cFarClipPS; //clpp.z /(cFarClipPS);
 
-
-      vec3 diffColor =vec3(0.2); //vec3(0.5 + sin(intersection.y * 0.6) * 0.3,0.6 + sin(intersection.z * 0.2) * 0.3,1.0);
+     //distance.r * 0.2
+     //1.0- distance.b * 0.2
+     //normalize(vec3(0.5,1.0- distance.b * 0.2,distance.r * 0.2))
+      vec3 diffColor = normalize(vec3(abs(2.0- distance.r),abs(1.7- distance.g),abs(1.7- distance.b))); //vec3(0.2); //vec3(0.5 + sin(intersection.y * 0.6) * 0.3,0.6 + sin(intersection.z * 0.2) * 0.3,1.0);
 
       vec3 ambient = diffColor.rgb;
 
@@ -131,7 +133,7 @@ void PS()
 
   //gl_FragColor = vec4(ambient , 1.0);
   #ifndef PREMARCH
-    gl_FragData[0] = vec4(mix(0.02 , 0.0001*ao * (1.-fog),1.-fog));//vec4(vec3(0.3) * (1.-fog),1.0);
+    gl_FragData[0] = vec4(mix(0.02 , 0.0001*ao * (1.-fog),1.-fog));//vec4(vec3(0.3) * (1.-fog),1.0); //distance.r * 0.2
     gl_FragData[1] = vec4(diffColor.rgb * (1.-fog), 1.0 );
     //gl_FragData[0] = vec4(float(stps)/256,0.,0.,0.);//vec4(float(stps)/cRAY_STEPS,0.,0.,0.);//vec4(mimus , plus,0.,0.); //vec4(vec3(0.3) * (1.-fog),1.0);
     //gl_FragData[1] = vec4(0.);//vec4(diffColor.rgb * fog, 1.7 );
