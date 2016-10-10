@@ -112,10 +112,8 @@ void PS()
      //vec4 clpp = vec4(intersection,1.0) * cViewProjPS;
      float fdepth = (totalDistance*locDir.z)/cFarClipPS; //clpp.z /(cFarClipPS);
 
-     //distance.r * 0.2
-     //1.0- distance.b * 0.2
-     //normalize(vec3(0.5,1.0- distance.b * 0.2,distance.r * 0.2))
-      vec3 diffColor = normalize(vec3(abs(2.0- distance.r),abs(1.7- distance.g),abs(1.7- distance.b))); //vec3(0.2); //vec3(0.5 + sin(intersection.y * 0.6) * 0.3,0.6 + sin(intersection.z * 0.2) * 0.3,1.0);
+      //vec3 diffColor = normalize(vec3(pow(distance.r,-0.6),abs(1.7- distance.g),abs(1.7- distance.b)));
+      vec3 diffColor = vec3(0.5);
 
       vec3 ambient = diffColor.rgb;
 

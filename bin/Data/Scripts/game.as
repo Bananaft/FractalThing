@@ -45,16 +45,16 @@ void Start()
 	fooball.position = Vector3(0.0f,-4.0f,10.0f);
 	StaticModel@ ballModel = fooball.CreateComponent("StaticModel");
 	ballModel.model = cache.GetResource("Model", "Models/Sphere.mdl");
-	//Light@ fplight = fooball.CreateComponent("Light");
-	//fplight.color = Color(1.3,0.8,0.6,1.0);
-	//fplight.range = 15;
+	Light@ fplight = fooball.CreateComponent("Light");
+	fplight.color = Color(1.3,0.8,0.6,1.0);
+	fplight.range = 25;
 	
-	//Node@ spotNode = fooball.CreateChild("spotNode");
-	//Light@ splight = fooball.CreateComponent("Light");
-	//splight.color = Color(1.9,2.8,3.6,1.0);
-	//splight.lightType = LIGHT_SPOT;
-	//splight.fov = 10.;
-	//splight.range = 250;
+	Node@ spotNode = fooball.CreateChild("spotNode");
+	Light@ splight = fooball.CreateComponent("Light");
+	splight.color = Color(1.9,2.8,3.6,1.0);
+	splight.lightType = LIGHT_SPOT;
+	splight.fov = 10.;
+	splight.range = 250;
 	
 /*	Node@ fooPlaneNode = cameraNode.CreateChild("Plane");
 	fooPlaneNode.scale = Vector3(150.0f, 1.0f, 150.0f);
@@ -96,6 +96,8 @@ void Start()
 		//light.lightType = LIGHT_DIRECTIONAL;
 		plight.color = Color(0.2+Random(1.0f),0.2+Random(1.0f),0.2+Random(1.0f),1.0) * (0.6 + Random(16.0f));
 		plight.range = 15 + Random(100);
+		
+		if (Random(1.0)>0.2) plight.lightType = LIGHT_SPOT;
 	}
 
 

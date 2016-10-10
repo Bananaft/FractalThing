@@ -29,6 +29,7 @@ vec4 sdfmap2(vec3 p)
 
   float r2 = 0.;
   float k = 0.;
+  float uggg = 0.;
   for( int i=0; i < 12;i++ )
   {
       p = 2.0*clamp(p, -CSize, CSize) - p;
@@ -37,6 +38,7 @@ vec4 sdfmap2(vec3 p)
       k = max((2.0)/(r2), .0274); //.378888 //.13345 max((2.6)/(r2), .03211);
       p     *= k;
       scale *= k;
+      uggg += r2;
   }
   float l = length(p.xy);
   float rxy = l - 4.0;
@@ -44,6 +46,6 @@ vec4 sdfmap2(vec3 p)
   rxy = max(rxy, -(n) / 4.);
   float dist = (rxy) / abs(scale);
   //dist = max(dist,-s);
-  return vec4(r2,k,l,dist);
+  return vec4(0.,0.,0.,dist);
 
 }
