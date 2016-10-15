@@ -41,6 +41,91 @@ void VS()
 }
 
 
+float InScatter(vec3 start, vec3 dir, vec3 lightPos, float d)
+{
+	// calculate quadratic coefficients a,b,c
+	vec3 q = start - lightPos;
+
+	float b = dot(dir, q);
+	float c = dot(q, q);
+
+	// evaluate integral
+	float s = 1.0f / sqrt(c - b*b);
+
+	float l = s * (atan( (d + b) * s) - atan( b*s ));
+
+	return l;
+}
+
+void SolveQuadratic(float a, float b, float c, out float minT, out float maxT)
+{
+	float discriminant = b*b - 4.0*a*c;
+
+	if (discriminant < 0.0)
+	{
+		// no real solutions so return a degenerate result
+		maxT = 0.0;
+		minT = 0.0;
+		return;
+	}
+
+	// numerical receipes 5.6 (this method ensures numerical accuracy is preserved)
+	float t = -0.5 * (b + sign(b)*sqrt(discriminant));
+	float closestT = t / a;
+	float furthestT = c / t;
+
+	if (closestT > furthestT)
+	{
+		minT = furthestT;
+		maxT = closestT;
+	}
+	else
+	{
+		minT = closestT;
+		maxT = furthestT;
+	}
+}
+
+void IntersectCone(vec3 rayOrigin, vec3 rayDir, mat4 invConeTransform, float aperture, float height, out float minT, out float maxT)
+{
+	vec4 localOrigin = invConeTransform * vec4(rayOrigin, 1.0);
+	vec4 localDir = invConeTransform * vec4(rayDir, 0.0);
+
+	// could perform this on the cpu
+	float tanTheta = tan(aperture);
+	tanTheta *= tanTheta;
+
+	float a = localDir.x*localDir.x + localDir.z*localDir.z - localDir.y*localDir.y*tanTheta;
+	float b = 2.0*(localOrigin.x*localDir.x + localOrigin.z*localDir.z - localOrigin.y*localDir.y*tanTheta);
+	float c = localOrigin.x*localOrigin.x + localOrigin.z*localOrigin.z - localOrigin.y*localOrigin.y*tanTheta;
+
+	SolveQuadratic(a, b, c, minT, maxT);
+
+	float y1 = localOrigin.y + localDir.y*minT;
+	float y2 = localOrigin.y + localDir.y*maxT;
+
+	// should be possible to simplify these branches if the compiler isn't already doing it
+
+	if (y1 > 0.0 && y2 > 0.0)
+	{
+		// both intersections are in the reflected cone so return degenerate value
+		minT = 0.0;
+		maxT = -1.0;
+	}
+	else if (y1 > 0.0 && y2 < 0.0)
+	{
+		// closest t on the wrong side, furthest on the right side => ray enters volume but doesn't leave it (so set maxT arbitrarily large)
+		minT = maxT;
+		maxT = 10000.0;
+	}
+	else if (y1 < 0.0 && y2 > 0.0)
+	{
+		// closest t on the right side, largest on the wrong side => ray starts in volume and exits once
+		maxT = minT;
+		minT = 0.0;
+	}
+}
+
 void PS()
 {
     // If rendering a directional light quad, optimize out the w divide
@@ -81,11 +166,14 @@ void PS()
     vec3 lightColor;
     vec3 lightDir;
     float lightDist;
-    float diff = GetDiffuse(normal, worldPos, lightDir, normalInput.a);
-    float vol =max(1. - length(vScreenLpos.xyz-normalize(vFarRay)) * vScreenLpos.w * cLightPosPS.w,0. );// max(10. - length(vScreenLpos.xy),0. );// max(2. - length(vScreenLpos.ba-vScreenLpos.xy),0. );
+    float diff = GetDiffuse(normal, worldPos, lightDir, normalInput.a, lightDist);
+    //float vol = max(1. - length(vScreenLpos.xyz-normalize(vFarRay)) * vScreenLpos.w * cLightPosPS.w,0. );// max(10. - length(vScreenLpos.xy),0. );// max(2. - length(vScreenLpos.ba-vScreenLpos.xy),0. );
     //THIS THING SHOULD BE MOVED TO VS
-    float volzclip = clamp( (length(eyeVec) - vScreenLpos.w)*cLightPosPS.w, 0. , 1.) *  clamp(pow((vScreenLpos.w - 1.1/cLightPosPS.w)*0.003,2.2),0.,1.);
-    vol = volzclip * pow(vol,5.);
+    //float volzclip = clamp( (length(eyeVec) - vScreenLpos.w)*cLightPosPS.w, 0. , 1.) *  clamp(pow((vScreenLpos.w - 1.1/cLightPosPS.w)*0.003,2.2),0.,1.);
+    //vol = volzclip * pow(vol,5.);
+
+
+    float vol = max(InScatter(cCameraPosPS, normalize(vFarRay), cLightPosPS.xyz, depth * cFarClipPS) * 0.9,0.);
 
     #ifdef SHADOW
         diff *= GetShadowDeferred(projWorldPos, normal, depth);
