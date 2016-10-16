@@ -40,6 +40,45 @@ void VS()
     #endif
 }
 
+float sphDensity( vec3  ro, vec3  rd,   // ray origin, ray direction
+                  vec3  sc, float sr,   // sphere center, sphere radius
+                  float dbuffer )       // depth buffer
+{
+    // normalize the problem to the canonical sphere
+    float ndbuffer = dbuffer / sr;
+    vec3  rc = (ro - sc)/sr;
+
+    // find intersection with sphere
+    float b = dot(rd,rc);
+    float c = dot(rc,rc) - 1.0;
+    float h = b*b - c;
+
+    // not intersecting
+    if( h<0.0 ) return 0.0;
+
+    h = sqrt( h );
+
+    //float s = 1. /(sr/h);
+
+    //float l = s * (atan( (dbuffer + b) * s) - atan( b*s ));
+
+    //return h*h*h;
+
+    float t1 = -b - h;
+    float t2 = -b + h;
+
+    // not visible (behind camera or behind ndbuffer)
+    if( t2<0.0 || t1>ndbuffer ) return 0.0;
+
+    // clip integration segment from camera to ndbuffer
+    t1 = max( t1, 0.0 );
+    t2 = min( t2, ndbuffer );
+
+    // analytical integration of an inverse squared density
+    float i1 = -(c*t1 + b*t1*t1 + t1*t1*t1/3.0);
+    float i2 = -(c*t2 + b*t2*t2 + t2*t2*t2/3.0);
+    return (i2-i1)*(3.0/4.0);
+}
 
 float InScatter(vec3 start, vec3 dir, vec3 lightPos, float d)
 {
@@ -50,7 +89,7 @@ float InScatter(vec3 start, vec3 dir, vec3 lightPos, float d)
 	float c = dot(q, q);
 
 	// evaluate integral
-	float s = 1.0f / sqrt(c - b*b);
+	float s = 1. / sqrt(c - b*b);
 
 	float l = s * (atan( (d + b) * s) - atan( b*s ));
 
@@ -151,7 +190,8 @@ void PS()
         #ifdef ORTHO
             vec3 worldPos = mix(vNearRay, vFarRay, depth) / vScreenPos.w;
         #else
-            vec3 worldPos = vFarRay * depth / vScreenPos.w;
+            vec3 wP = vFarRay * depth / vScreenPos.w;
+            vec3 worldPos = wP;
         #endif
         vec4 albedoInput = texture2DProj(sAlbedoBuffer, vScreenPos);
         vec4 normalInput = texture2DProj(sNormalBuffer, vScreenPos);
@@ -167,13 +207,31 @@ void PS()
     vec3 lightDir;
     float lightDist;
     float diff = GetDiffuse(normal, worldPos, lightDir, normalInput.a, lightDist);
-    //float vol = max(1. - length(vScreenLpos.xyz-normalize(vFarRay)) * vScreenLpos.w * cLightPosPS.w,0. );// max(10. - length(vScreenLpos.xy),0. );// max(2. - length(vScreenLpos.ba-vScreenLpos.xy),0. );
-    //THIS THING SHOULD BE MOVED TO VS
-    //float volzclip = clamp( (length(eyeVec) - vScreenLpos.w)*cLightPosPS.w, 0. , 1.) *  clamp(pow((vScreenLpos.w - 1.1/cLightPosPS.w)*0.003,2.2),0.,1.);
-    //vol = volzclip * pow(vol,5.);
 
+    vec3 dir = normalize(vFarRay);
+    float Z = length(eyeVec);
+    float vol;
 
-    float vol = max(InScatter(cCameraPosPS, normalize(vFarRay), cLightPosPS.xyz, depth * cFarClipPS) * 0.9,0.);
+    #if defined(SPOTLIGHT)
+      float aperture = 0.4;
+      float height = 30.0;
+      float minT = 0.0;
+      float maxT = 0.0;
+
+      IntersectCone(cCameraPosPS, dir, cLightMatricesPS[0], aperture, height, minT, maxT);
+
+      // clamp bounds to scene geometry / camera
+      maxT = clamp(maxT, 0.0, Z);
+      minT = max(0.0, minT);
+      float t = max(0.0, maxT - minT);
+
+      vol = min(InScatter(cCameraPosPS + dir*minT, dir, cLightPosPS.xyz, t) * 0.5,16.);
+    #else
+      vol = min(InScatter(cCameraPosPS, dir, cLightPosPS.xyz, Z) * 0.5,16.);
+    #endif
+
+    float dens = min(sphDensity(cCameraPosPS,normalize(vFarRay),cLightPosPS.xyz,1./cLightPosPS.w, Z),1.);
+    vol *= dens;
 
     #ifdef SHADOW
         diff *= GetShadowDeferred(projWorldPos, normal, depth);
@@ -181,7 +239,9 @@ void PS()
 
     #if defined(SPOTLIGHT)
         vec4 spotPos = projWorldPos * cLightMatricesPS[0];
-        lightColor = spotPos.w > 0.0 ? texture2DProj(sLightSpotMap, spotPos).rgb * cLightColor.rgb : vec3(0.0);
+        lightColor =cLightColor.rgb;// spotPos.w > 0.0 ? texture2DProj(sLightSpotMap, spotPos).rgb * cLightColor.rgb : vec3(0.0);
+        float spot = spotPos.w > 0.0 ? texture2DProj(sLightSpotMap, spotPos).r: 0.0;
+        diff *= spot;
     #elif defined(CUBEMASK)
         mat3 lightVecRot = mat3(cLightMatricesPS[0][0].xyz, cLightMatricesPS[0][1].xyz, cLightMatricesPS[0][2].xyz);
         lightColor = textureCube(sLightCubeMap, (worldPos - cLightPosPS.xyz) * lightVecRot).rgb * cLightColor.rgb;
