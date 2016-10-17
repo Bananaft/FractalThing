@@ -122,3 +122,17 @@ void IntersectCone(vec3 rayOrigin, vec3 rayDir, mat4 invConeTransform, float ape
 		minT = 0.0;
 	}
 }
+
+float raySphere(vec3 org, vec3 dir, float radius ,out float near)
+{
+
+  float b = dot(dir, org);
+	float c = dot(org, org) - radius * radius;
+	float delta = b*b - c;
+  if( delta < 0.0)
+		return 0.;
+	float deltasqrt = sqrt(delta);
+	near = -b - deltasqrt;
+	float far = -b + deltasqrt;
+	return far;
+}

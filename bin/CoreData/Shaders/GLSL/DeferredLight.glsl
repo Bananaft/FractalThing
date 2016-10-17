@@ -88,27 +88,41 @@ void PS()
     float Z = length(eyeVec);
     float vol;
 
+
+    float minT = 0.0;
+    float maxT = 0.0;
+
+    float sminT;
+    float smaxT = raySphere(cCameraPosPS-cLightPosPS.xyz, dir, 1./cLightPosPS.w , sminT);
+
     #if defined(SPOTLIGHT)
-      float aperture = 0.25;
-      float height = 30.0;
-      float minT = 0.0;
-      float maxT = 0.0;
-      mat4 mymat = mat4(vec4( 1. , 0. , 0. , 0. ),
-                        vec4( 0. , 1. , 0. , 0. ),
-                        vec4( 0. , 0. , -1. , 0. ),
-                        vec4( -cLightPosPS.x ,-cLightPosPS.y , cLightPosPS.z , 1. ));
-      IntersectCone(cCameraPosPS, dir,mymat, aperture, height, minT, maxT);
+        float aperture = 0.25;
+        float height = 30.0;
 
-      // clamp bounds to scene geometry / camera
-      maxT = clamp(maxT, 0.0, Z);
-      minT = max(0.0, minT);
-      float t = max(0.0, maxT - minT);
+        mat4 mymat = mat4(vec4( 1. , 0. , 0. , 0. ),
+                          vec4( 0. , 1. , 0. , 0. ),
+                          vec4( 0. , 0. , -1. , 0. ),
+                          vec4( -cLightPosPS.x ,-cLightPosPS.y , cLightPosPS.z , 1. ));
+        IntersectCone(cCameraPosPS, dir,mymat, aperture, height, minT, maxT);
 
-      vol = min(InScatter(cCameraPosPS + dir*minT, dir, cLightPosPS.xyz, t) * 0.5,16.);
-
+        // clamp bounds to scene geometry / camera
+        maxT = clamp(maxT, 0.0, Z);
+        minT = max(0.0, minT);
+        maxT = min(maxT, smaxT);
+        minT = max(minT, sminT);
     #else
-      vol = min(InScatter(cCameraPosPS, dir, cLightPosPS.xyz, Z) * 0.5,16.);
+      minT =  max(0.0, sminT);;
+      maxT = clamp(smaxT,0.,Z);
     #endif
+
+
+    float t = max(0.0, maxT - minT);
+
+    vol = min(InScatter(cCameraPosPS + dir*minT, dir, cLightPosPS.xyz, t) * 0.5,16.);
+
+
+    //  vol = min(InScatter(cCameraPosPS, dir, cLightPosPS.xyz, Z) * 0.5,16.);
+
 
     //float dens = min(sphDensity(cCameraPosPS,normalize(vFarRay),cLightPosPS.xyz,1./cLightPosPS.w, Z),1.);
     //vol *= dens;
@@ -131,7 +145,7 @@ void PS()
 
     #ifdef SPECULAR
         float spec = GetSpecular(normal, eyeVec, lightDir, 0.7 * 255.0);
-        gl_FragColor =vec4( vol * lightColor  * 1,0.) + diff * vec4(lightColor * (albedoInput.rgb + spec * cLightColor.a * albedoInput.aaa), 0.0);
+        gl_FragColor =vec4( vol * lightColor,0.) + diff * vec4(lightColor * (albedoInput.rgb + spec * cLightColor.a * albedoInput.aaa), 0.0);
     #else
         gl_FragColor = diff * vec4(lightColor * albedoInput.rgb, 0.0);
     #endif
