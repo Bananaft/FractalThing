@@ -97,7 +97,7 @@ void Start()
 		plight.color = Color(0.2+Random(1.0f),0.2+Random(1.0f),0.2+Random(1.0f),1.0) * (0.6 + Random(16.0f));
 		plight.range = 15 + Random(100);
 		
-		if (Random(1.0)>0.8) plight.lightType = LIGHT_SPOT;
+		if (Random(1.0)>0.02) plight.lightType = LIGHT_SPOT;
 	}
 
 
