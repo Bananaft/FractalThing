@@ -95,9 +95,9 @@ void Start()
 		Light@ plight = plightNode.CreateComponent("Light");
 		//light.lightType = LIGHT_DIRECTIONAL;
 		plight.color = Color(0.2+Random(1.0f),0.2+Random(1.0f),0.2+Random(1.0f),1.0) * (0.6 + Random(16.0f));
-		plight.range = 15 + Random(100);
+		plight.range = 150 + Random(200);
 		
-		if (Random(1.0)>0.02) plight.lightType = LIGHT_SPOT;
+		if (Random(1.0)>0.0) plight.lightType = LIGHT_SPOT;
 	}
 
 

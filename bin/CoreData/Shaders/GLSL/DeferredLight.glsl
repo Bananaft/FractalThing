@@ -85,16 +85,19 @@ void PS()
     float diff = GetDiffuse(normal, worldPos, lightDir, normalInput.a, lightDist);
 
     vec3 dir = normalize(vFarRay);
-    float Z = 12000.;//length(eyeVec);
+    float Z = length(eyeVec);
     float vol;
 
     #if defined(SPOTLIGHT)
-      float aperture = 0.1;
+      float aperture = 0.25;
       float height = 30.0;
       float minT = 0.0;
       float maxT = 0.0;
-
-      IntersectCone(cCameraPosPS, dir,inverse(cLightMatricesPS[0]), aperture, height, minT, maxT);
+      mat4 mymat = mat4(vec4( 1. , 0. , 0. , 0. ),
+                        vec4( 0. , 1. , 0. , 0. ),
+                        vec4( 0. , 0. , -1. , 0. ),
+                        vec4( -cLightPosPS.x ,-cLightPosPS.y , cLightPosPS.z , 1. ));
+      IntersectCone(cCameraPosPS, dir,mymat, aperture, height, minT, maxT);
 
       // clamp bounds to scene geometry / camera
       maxT = clamp(maxT, 0.0, Z);
@@ -107,7 +110,7 @@ void PS()
       vol = min(InScatter(cCameraPosPS, dir, cLightPosPS.xyz, Z) * 0.5,16.);
     #endif
 
-    float dens = min(sphDensity(cCameraPosPS,normalize(vFarRay),cLightPosPS.xyz,1./cLightPosPS.w, Z),1.);
+    //float dens = min(sphDensity(cCameraPosPS,normalize(vFarRay),cLightPosPS.xyz,1./cLightPosPS.w, Z),1.);
     //vol *= dens;
 
     #ifdef SHADOW
@@ -128,7 +131,7 @@ void PS()
 
     #ifdef SPECULAR
         float spec = GetSpecular(normal, eyeVec, lightDir, 0.7 * 255.0);
-        gl_FragColor =vec4( vol * lightColor  * 0.1,0.) + diff * vec4(lightColor * (albedoInput.rgb + spec * cLightColor.a * albedoInput.aaa), 0.0);
+        gl_FragColor =vec4( vol * lightColor  * 1,0.) + diff * vec4(lightColor * (albedoInput.rgb + spec * cLightColor.a * albedoInput.aaa), 0.0);
     #else
         gl_FragColor = diff * vec4(lightColor * albedoInput.rgb, 0.0);
     #endif

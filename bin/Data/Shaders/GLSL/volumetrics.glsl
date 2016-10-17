@@ -88,19 +88,18 @@ void IntersectCone(vec3 rayOrigin, vec3 rayDir, mat4 invConeTransform, float ape
 {
 	vec4 localOrigin = invConeTransform * vec4(rayOrigin, 1.0);
 	vec4 localDir = invConeTransform * vec4(rayDir, 0.0);
-
 	// could perform this on the cpu
 	float tanTheta = tan(aperture);
 	tanTheta *= tanTheta;
 
-	float a = localDir.x*localDir.x + localDir.z*localDir.z - localDir.y*localDir.y*tanTheta;
-	float b = 2.0*(localOrigin.x*localDir.x + localOrigin.z*localDir.z - localOrigin.y*localDir.y*tanTheta);
-	float c = localOrigin.x*localOrigin.x + localOrigin.z*localOrigin.z - localOrigin.y*localOrigin.y*tanTheta;
+	float a = localDir.x*localDir.x + localDir.y*localDir.y - localDir.z*localDir.z*tanTheta;
+	float b = 2.0*(localOrigin.x*localDir.x + localOrigin.y*localDir.y - localOrigin.z*localDir.z*tanTheta);
+	float c = localOrigin.x*localOrigin.x + localOrigin.y*localOrigin.y - localOrigin.z*localOrigin.z*tanTheta;
 
 	SolveQuadratic(a, b, c, minT, maxT);
 
-	float y1 = localOrigin.y + localDir.y*minT;
-	float y2 = localOrigin.y + localDir.y*maxT;
+	float y1 = localOrigin.z + localDir.z*minT;
+	float y2 = localOrigin.z + localDir.z*maxT;
 
 	// should be possible to simplify these branches if the compiler isn't already doing it
 
