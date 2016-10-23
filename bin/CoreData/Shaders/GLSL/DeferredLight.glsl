@@ -11,6 +11,7 @@
     varying vec4 vScreenPos;
     varying vec4 vScreenLpos;
 #endif
+varying mat3 vModel;
 varying vec3 vFarRay;
 #ifdef ORTHO
     varying vec3 vNearRay;
@@ -19,6 +20,7 @@ varying vec3 vFarRay;
 void VS()
 {
     mat4 modelMatrix = iModelMatrix;
+    vModel = inverse(mat3(modelMatrix));
     vec3 worldPos = GetWorldPos(modelMatrix);
     gl_Position = GetClipPos(worldPos);
     #ifdef DIRLIGHT
@@ -99,11 +101,11 @@ void PS()
         float aperture = 0.25;
         float height = 30.0;
 
-        mat4 mymat = mat4(vec4( 1. , 0. , 0. , 0. ),
-                          vec4( 0. , 1. , 0. , 0. ),
-                          vec4( 0. , 0. , -1. , 0. ),
+        mat4 mymat = mat4(vec4(vModel[0].x, vModel[0].y, vModel[0].z, 0. ),
+                          vec4(vModel[1].x, vModel[1].y, vModel[1].z, 0. ),
+                          vec4(vModel[2].x, vModel[2].y, -vModel[2].z, 0. ),
                           vec4( -cLightPosPS.x ,-cLightPosPS.y , cLightPosPS.z , 1. ));
-        IntersectCone(cCameraPosPS, dir,mymat, aperture, height, minT, maxT);
+        IntersectCone(cCameraPosPS, dir, mymat, aperture, height, minT, maxT);
 
         // clamp bounds to scene geometry / camera
         maxT = clamp(maxT, 0.0, Z);
@@ -118,7 +120,7 @@ void PS()
 
     float t = max(0.0, maxT - minT);
 
-    vol = min(InScatter(cCameraPosPS + dir*minT, dir, cLightPosPS.xyz, t) * 0.5,16.);
+    vol = min(InScatter(cCameraPosPS + dir*minT, dir, cLightPosPS.xyz, t) * 0.2,16.);
 
 
     //  vol = min(InScatter(cCameraPosPS, dir, cLightPosPS.xyz, Z) * 0.5,16.);
