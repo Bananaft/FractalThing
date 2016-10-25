@@ -95,9 +95,10 @@ void Start()
 		Light@ plight = plightNode.CreateComponent("Light");
 		//light.lightType = LIGHT_DIRECTIONAL;
 		plight.color = Color(0.2+Random(1.0f),0.2+Random(1.0f),0.2+Random(1.0f),1.0) * (0.3 + Random(3.0f));
-		plight.range = 20 + Random(100);
-		plightNode.Rotate(Quaternion(0.f,10.f,0.f));
-		if (Random(1.0)>1.) plight.lightType = LIGHT_SPOT;
+		plight.range = 50 + Random(100);
+		plight.fov = 30.f;
+		plightNode.Rotate(Quaternion(45.f,45.f,0.f));
+		if (Random(1.0)>0.) plight.lightType = LIGHT_SPOT;
 	}
 
 

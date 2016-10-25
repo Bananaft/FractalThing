@@ -35,7 +35,7 @@ vec4 sdfmap2(vec3 p)
       p = 2.0*clamp(p, -CSize, CSize) - p;
       r2 = dot(p,p);
       //float r2 = dot(p,p+sin(p.z*.3)); //Alternate fractal
-      k = max((2.0)/(r2), .0274); //.378888 //.13345 max((2.6)/(r2), .03211);
+      k = max((2.0)/(r2), .0274); //.378888 //.13345 max((2.6)/(r2), .03211); //max((1.8)/(r2), .0018);
       p     *= k;
       scale *= k;
       uggg += r2;

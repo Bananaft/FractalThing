@@ -11,16 +11,20 @@
     varying vec4 vScreenPos;
     varying vec4 vScreenLpos;
 #endif
-varying mat3 vModel;
+varying mat4 vModel;
 varying vec3 vFarRay;
 #ifdef ORTHO
     varying vec3 vNearRay;
 #endif
 
+#ifdef SPOTLIGHT
+  uniform mat4 SpotMatrix;
+#endif
+
 void VS()
 {
     mat4 modelMatrix = iModelMatrix;
-    vModel = inverse(mat3(modelMatrix));
+    vModel = modelMatrix;
     vec3 worldPos = GetWorldPos(modelMatrix);
     gl_Position = GetClipPos(worldPos);
     #ifdef DIRLIGHT
@@ -87,7 +91,7 @@ void PS()
     float diff = GetDiffuse(normal, worldPos, lightDir, normalInput.a, lightDist);
 
     vec3 dir = normalize(vFarRay);
-    float Z = length(eyeVec);
+    float Z = 12000.;//length(eyeVec);
     float vol;
 
 
@@ -101,11 +105,12 @@ void PS()
         float aperture = 0.25;
         float height = 30.0;
 
-        mat4 mymat = mat4(vec4(vModel[0].x, vModel[0].y, vModel[0].z, 0. ),
-                          vec4(vModel[1].x, vModel[1].y, vModel[1].z, 0. ),
-                          vec4(vModel[2].x, vModel[2].y, -vModel[2].z, 0. ),
-                          vec4( -cLightPosPS.x ,-cLightPosPS.y , cLightPosPS.z , 1. ));
-        IntersectCone(cCameraPosPS, dir, mymat, aperture, height, minT, maxT);
+        mat4 mymat = mat4(vec4(1. , 1. , -1. , 1. ),
+                          vec4( 1 , 1. , -1. , 1. ),
+                          vec4( 1. , 1. , -1. , 1. ),
+                          vec4(-1.,-1.,1.,1.));
+                          //vec4( cLightPosPS.x ,cLightPosPS.y , cLightPosPS.z , 1. ));
+        IntersectCone(cCameraPosPS, dir, SpotMatrix, aperture, height, minT, maxT);
 
         // clamp bounds to scene geometry / camera
         maxT = clamp(maxT, 0.0, Z);
