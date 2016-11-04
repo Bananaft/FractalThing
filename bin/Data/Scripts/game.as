@@ -88,7 +88,7 @@ void Start()
 	SubscribeToEvent("Update", "HandleUpdate");
 	SubscribeToEvent("PostRenderUpdate", "HandlePostRenderUpdate");
 
-	   for (int i=0; i<800; i++)
+	   for (int i=0; i<1600; i++)
 	{
 	   Node@ plightNode = scene_.CreateChild("pointlight");
 	   plightNode.position = Vector3(500-Random(1000),1500-Random(3000),500-Random(1000));
@@ -97,7 +97,7 @@ void Start()
 		plight.color = Color(0.2+Random(1.0f),0.2+Random(1.0f),0.2+Random(1.0f),1.0) * (0.3 + Random(3.0f));
 		plight.range = 50 + Random(100);
 		plight.fov = 30.f;
-		plightNode.Rotate(Quaternion(45.f,45.f,0.f));
+		//plightNode.Rotate(Quaternion(45.f,45.f,0.f));
 		if (Random(1.0)>0.) plight.lightType = LIGHT_SPOT;
 	}
 
