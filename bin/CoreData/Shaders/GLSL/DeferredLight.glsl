@@ -18,7 +18,7 @@ varying vec3 vFarRay;
 #endif
 
 //#if defined(SPOTLIGHT)
-  uniform mat4 SpotMatrix;
+
   varying mat4 vSpotMatrix;
 //#endif
 
@@ -48,19 +48,19 @@ void VS()
 
 
 
-            vec3 cu = normalize(iModelMatrix * vec4(1.,0.,0.,0.)).xyz;
-            vec3 cv = normalize(iModelMatrix * vec4(0.,1.,0.,0.)).xyz;
-            vec3 cw = normalize(iModelMatrix * vec4(0.,0.,-1.,0.)).xyz;
-            //vec3 cp = vec3(0., 1.,0.);
-            //vec3 cu = normalize( cross(cw,cp) );
-            //vec3 cv = normalize( cross(cu,cw) );
-            mat4 spmat = mat4(vec4(cu,0.),
-                              vec4(cv,0.),
-                              vec4(cw,0.),
-                              vec4(cLightPos.x,cLightPos.y,cLightPos.z,1.));
-            vSpotMatrix = inverse(spmat);
 
-           //vSpotMatrix[2] = cLightPos;
+            mat4 rmat = mat4(vec4(1.,0.,0.,0.),
+                            vec4(0.,1.,0.,0.),
+                            vec4(0.,0.,1.,0.),
+                            vec4(-cLightPos.x,-cLightPos.y,-cLightPos.z,1.));
+
+            mat4 mymat = cSpotMatrix;
+            mymat[0][2] *= -1;
+            mymat[1][2] *= -1;
+            mymat[2][2] *= -1;
+
+            vSpotMatrix = mymat*rmat;
+
 
     #endif
 
@@ -111,7 +111,7 @@ void PS()
     float diff = GetDiffuse(normal, worldPos, lightDir, normalInput.a, lightDist);
 
     vec3 dir = normalize(vFarRay);
-    float Z = 12000.;//length(eyeVec);
+    float Z = length(eyeVec);
     float vol;
 
 
@@ -141,7 +141,7 @@ void PS()
 
     float t = max(0.0, maxT - minT);
 
-    vol = min(InScatter(cCameraPosPS + dir*minT, dir, cLightPosPS.xyz, t) * 2.9,16.);
+    vol = min(InScatter(cCameraPosPS + dir*minT, dir, cLightPosPS.xyz, t) * 0.2,16.);
 
 
     //  vol = min(InScatter(cCameraPosPS, dir, cLightPosPS.xyz, Z) * 0.5,16.);
@@ -168,7 +168,7 @@ void PS()
 
     #ifdef SPECULAR
         float spec = GetSpecular(normal, eyeVec, lightDir, 0.7 * 255.0);
-        gl_FragColor = vec4(lightColor*0.0001,0.) + vec4( vol * lightColor,0.) + diff * vec4(lightColor * (albedoInput.rgb + spec * cLightColor.a * albedoInput.aaa), 0.0);
+        gl_FragColor = vec4( vol * lightColor,0.) + diff * vec4(lightColor * (albedoInput.rgb + spec * cLightColor.a * albedoInput.aaa), 0.0);
     #else
         gl_FragColor = diff * vec4(lightColor * albedoInput.rgb, 0.0);
     #endif
