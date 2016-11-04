@@ -122,7 +122,8 @@ void PS()
     float smaxT = raySphere(cCameraPosPS-cLightPosPS.xyz, dir, 1./cLightPosPS.w , sminT);
 
     #if defined(SPOTLIGHT)
-        float aperture = 0.26;
+        float aperture = cSpotFovPS * 0.5;
+
         float height = 30.0;
 
 
@@ -142,7 +143,7 @@ void PS()
 
     float t = clamp(maxT - minT,0.,1000.);
 
-    vol = min(InScatter(cCameraPosPS + dir*minT, dir, cLightPosPS.xyz, t) * 0.05,32.);
+    vol = min(InScatter(cCameraPosPS + dir*minT, dir, cLightPosPS.xyz, t) * 0.05,16.);
 
 
     //  vol = min(InScatter(cCameraPosPS, dir, cLightPosPS.xyz, Z) * 0.5,16.);

@@ -80,6 +80,7 @@ uniform vec4 cShadowDepthFade;
 uniform vec2 cShadowIntensity;
 uniform vec2 cShadowMapInvSize;
 uniform vec4 cShadowSplits;
+uniform float cSpotFovPS;
 uniform mat4 cLightMatricesPS[4];
 #ifdef VSM_SHADOW
 uniform vec2 cVSMShadowParams;
@@ -128,6 +129,7 @@ uniform LightVS
     vec4 cVertexLights[4 * 3];
 #else
     mat4 cSpotMatrix;
+    float cSpotFovPS;
     mat4 cLightMatrices[4];
 #endif
 };

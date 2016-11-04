@@ -41,7 +41,7 @@ void Start()
     flcam.Init();
 	camera.farClip = 1200;
 	
-	Node@ fooball = cameraNode.CreateChild("fooball");
+/*	Node@ fooball = cameraNode.CreateChild("fooball");
 	fooball.position = Vector3(0.0f,-4.0f,10.0f);
 	StaticModel@ ballModel = fooball.CreateComponent("StaticModel");
 	ballModel.model = cache.GetResource("Model", "Models/Sphere.mdl");
@@ -54,7 +54,7 @@ void Start()
 	splight.color = Color(1.9,2.8,3.6,1.0);
 	splight.lightType = LIGHT_SPOT;
 	splight.fov = 30.;
-	splight.range = 250;
+	splight.range = 250;*/
 	
 /*	Node@ fooPlaneNode = cameraNode.CreateChild("Plane");
 	fooPlaneNode.scale = Vector3(150.0f, 1.0f, 150.0f);
@@ -94,11 +94,11 @@ void Start()
 	   plightNode.position = Vector3(500-Random(1000),1500-Random(3000),500-Random(1000));
 		Light@ plight = plightNode.CreateComponent("Light");
 		//light.lightType = LIGHT_DIRECTIONAL;
-		plight.color = Color(0.2+Random(1.0f),0.2+Random(1.0f),0.2+Random(1.0f),1.0) * (0.3 + Random(3.0f));
-		plight.range = 150 + Random(100);
-		plight.fov = 30.f;
+		plight.color = Color(0.2+Random(1.0f),0.2+Random(1.0f),0.2+Random(1.0f),1.0) * (0.1 + Random(2.0f));
+		plight.range = 100 + Random(100);
+		plight.fov = 5+Random(120);
 		plightNode.Rotate(Quaternion(Random(360),Random(360),0.f));
-		if (Random(1.0)>0.2) plight.lightType = LIGHT_SPOT;
+		if (Random(1.0)>0.0) plight.lightType = LIGHT_SPOT;
 	}
 
 
