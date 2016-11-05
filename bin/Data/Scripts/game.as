@@ -3,6 +3,9 @@ Scene@ scene_;
 bool wireframe =false;
 RenderPath@ renderpath;
 
+Node@ veh;
+Node@ cameraNode;
+
 void Start()
 {
 	cache.autoReloadResources = true;
@@ -14,6 +17,14 @@ void Start()
 
   //SCENE
   scene_.CreateComponent("Octree");
+  
+    Node@ zoneNode = scene_.CreateChild("Zone");
+    Zone@ zone = zoneNode.CreateComponent("Zone");
+    zone.boundingBox = BoundingBox(-20000.0f, 20000.0f);
+    zone.ambientColor = Color(0.0f, 0.0f, 0.0f);
+    //zone.fogColor = Color(0.5f, 0.5f, 0.7f);
+    //zone.fogStart = 100.0f;
+    //zone.fogEnd = 300.0f;
 
 	Node@ planeNode = scene_.CreateChild("Plane");
 	planeNode.scale = Vector3(100.0f, 1.0f, 100.0f);
@@ -33,7 +44,7 @@ void Start()
 	//light.lightType = LIGHT_DIRECTIONAL;
 	//light.color = Color(0.2f,0.1f,0.4f,1.0) * 0.01;
 
-	Node@ cameraNode = scene_.CreateChild("CamNode");
+	cameraNode = scene_.CreateChild("CamNode");
 	cameraNode.position = Vector3(0.0f , 14.0f , -20.0f);
     Camera@ camera = cameraNode.CreateComponent("Camera");
 	Viewport@ mainVP = Viewport(scene_, camera);
@@ -88,7 +99,7 @@ void Start()
 	SubscribeToEvent("Update", "HandleUpdate");
 	SubscribeToEvent("PostRenderUpdate", "HandlePostRenderUpdate");
 
-	   for (int i=0; i<600; i++)
+	   for (int i=0; i<400; i++)
 	{
 	   Node@ plightNode = scene_.CreateChild("pointlight");
 	   plightNode.position = Vector3(500-Random(1000),1500-Random(3000),500-Random(1000));
@@ -96,10 +107,12 @@ void Start()
 		//light.lightType = LIGHT_DIRECTIONAL;
 		plight.color = Color(0.2+Random(1.0f),0.2+Random(1.0f),0.2+Random(1.0f),1.0) * (0.1 + Random(2.0f));
 		plight.range = 100 + Random(100);
-		plight.fov = 5+Random(120);
+		//plight.fov = 5+Random(120);
 		plightNode.Rotate(Quaternion(Random(360),Random(360),0.f));
-		if (Random(1.0)>0.0) plight.lightType = LIGHT_SPOT;
+		//if (Random(1.0)>0.0) plight.lightType = LIGHT_SPOT;
 	}
+	
+	veh = scene_.InstantiateXML(cache.GetResource("XMLFile", "Objects/barkas.xml"), Vector3(0,30,-50),Quaternion(0,0,0));
 
 
 }
@@ -145,25 +158,29 @@ void HandleKeyDown(StringHash eventType, VariantMap& eventData)
 
     // Take screenshot
     else if (key == KEY_F12)
-        {
-            Image@ screenshot = Image();
-            graphics.TakeScreenShot(screenshot);
-            // Here we save in the Data folder with date and time appended
-            screenshot.SavePNG(fileSystem.programDir + "Data/Screenshot_" +
-                time.timeStamp.Replaced(':', '_').Replaced('.', '_').Replaced(' ', '_') + ".png");
-        } else if (key == KEY_V)
-        {
+	{
+		Image@ screenshot = Image();
+		graphics.TakeScreenShot(screenshot);
+		// Here we save in the Data folder with date and time appended
+		screenshot.SavePNG(fileSystem.programDir + "Data/Screenshot_" +
+			time.timeStamp.Replaced(':', '_').Replaced('.', '_').Replaced(' ', '_') + ".png");
+	} else if (key == KEY_V)
+	{
 
-			Camera@ cam = renderer.viewports[0].camera;
-            if (wireframe){
-                cam.fillMode = FILL_SOLID;
-                wireframe = false;
-            } else {
-                cam.fillMode = FILL_WIREFRAME;
-                wireframe = true;
-            }
+		Camera@ cam = renderer.viewports[0].camera;
+		if (wireframe){
+			cam.fillMode = FILL_SOLID;
+			wireframe = false;
+		} else {
+			cam.fillMode = FILL_WIREFRAME;
+			wireframe = true;
+		}
 
-        }
+	} else if (key == KEY_SPACE)
+	{ 
+		veh.position = cameraNode.position;
+		veh.rotation = cameraNode.rotation;
+	}
 
 
 }
