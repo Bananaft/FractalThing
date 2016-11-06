@@ -99,14 +99,14 @@ void Start()
 	SubscribeToEvent("Update", "HandleUpdate");
 	SubscribeToEvent("PostRenderUpdate", "HandlePostRenderUpdate");
 
-	   for (int i=0; i<400; i++)
+	   for (int i=0; i<500; i++)
 	{
 	   Node@ plightNode = scene_.CreateChild("pointlight");
-	   plightNode.position = Vector3(500-Random(1000),1500-Random(3000),500-Random(1000));
+	   plightNode.position = Vector3(250-Random(500),250-Random(500),250-Random(500));
 		Light@ plight = plightNode.CreateComponent("Light");
 		//light.lightType = LIGHT_DIRECTIONAL;
-		plight.color = Color(0.2+Random(1.0f),0.2+Random(1.0f),0.2+Random(1.0f),1.0) * (0.1 + Random(2.0f));
-		plight.range = 100 + Random(100);
+		plight.color = Color(0.2+Random(1.0f),0.2+Random(1.0f),0.2+Random(1.0f),1.0) * (0.1 + Random(1.0f));
+		plight.range = 50 + Random(30);
 		//plight.fov = 5+Random(120);
 		plightNode.Rotate(Quaternion(Random(360),Random(360),0.f));
 		//if (Random(1.0)>0.0) plight.lightType = LIGHT_SPOT;
