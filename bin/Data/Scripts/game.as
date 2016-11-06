@@ -92,7 +92,7 @@ void Start()
 	//renderer.shadowQuality = 3;
 
 	camera.farClip = 12000;
-	camera.nearClip = 0.6;
+	camera.nearClip = 0.2;
 
 	camera.fov = 50.0f;
 
@@ -187,5 +187,5 @@ void HandleKeyDown(StringHash eventType, VariantMap& eventData)
 
 void HandleUpdate(StringHash eventType, VariantMap& eventData)
 {
-
+	//veh.position += veh.rotation * Vector3(0.,0.,0.2);
 }

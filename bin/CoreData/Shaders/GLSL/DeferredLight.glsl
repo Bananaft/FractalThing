@@ -143,7 +143,7 @@ void PS()
 
     float t = clamp(maxT - minT,0.,1000.);
 
-    vol = min(InScatter(cCameraPosPS + dir*minT, dir, cLightPosPS.xyz, t) * 0.05,16.);
+    vol = min(InScatter(cCameraPosPS + dir*minT, dir, cLightPosPS.xyz, t) * 0.2,16.);
 
 
     //  vol = min(InScatter(cCameraPosPS, dir, cLightPosPS.xyz, Z) * 0.5,16.);
