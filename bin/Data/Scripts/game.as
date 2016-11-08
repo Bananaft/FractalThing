@@ -17,7 +17,7 @@ void Start()
 
   //SCENE
   scene_.CreateComponent("Octree");
-  
+
     Node@ zoneNode = scene_.CreateChild("Zone");
     Zone@ zone = zoneNode.CreateComponent("Zone");
     zone.boundingBox = BoundingBox(-20000.0f, 20000.0f);
@@ -31,12 +31,12 @@ void Start()
 	planeNode.position = Vector3(0.0f,12.0f,0.0f);
 	StaticModel@ planeObject = planeNode.CreateComponent("StaticModel");
 	planeObject.model = cache.GetResource("Model", "Models/Plane.mdl");
-	
+
 	Node@ fakeboxNode = scene_.CreateChild("Plane");
 	fakeboxNode.scale = Vector3(20000.0f, 20000.0f, 20000.0f);
 	StaticModel@ fakeboxObject = fakeboxNode.CreateComponent("StaticModel");
 	fakeboxObject.model = cache.GetResource("Model", "Models/Box.mdl");
-	
+
 
 	//Node@ lightNode = scene_.CreateChild("DirectionalLight");
 	//lightNode.direction = Vector3(0.6f, -1.0f, 0.8f); // The direction vector does not need to be normalized
@@ -51,7 +51,7 @@ void Start()
     freelookCam@ flcam = cast<freelookCam>(cameraNode.CreateScriptObject(scriptFile, "freelookCam"));
     flcam.Init();
 	camera.farClip = 1200;
-	
+
 /*	Node@ fooball = cameraNode.CreateChild("fooball");
 	fooball.position = Vector3(0.0f,-4.0f,10.0f);
 	StaticModel@ ballModel = fooball.CreateComponent("StaticModel");
@@ -59,14 +59,14 @@ void Start()
 	//Light@ fplight = fooball.CreateComponent("Light");
 	//fplight.color = Color(1.3,0.8,0.6,1.0);
 	//fplight.range = 25;
-	
+
 	Node@ spotNode = fooball.CreateChild("spotNode");
 	Light@ splight = fooball.CreateComponent("Light");
 	splight.color = Color(1.9,2.8,3.6,1.0);
 	splight.lightType = LIGHT_SPOT;
 	splight.fov = 30.;
 	splight.range = 250;*/
-	
+
 /*	Node@ fooPlaneNode = cameraNode.CreateChild("Plane");
 	fooPlaneNode.scale = Vector3(150.0f, 1.0f, 150.0f);
 	fooPlaneNode.rotation = Quaternion(-90.,0.,0.);
@@ -111,7 +111,7 @@ void Start()
 		plightNode.Rotate(Quaternion(Random(360),Random(360),0.f));
 		//if (Random(1.0)>0.0) plight.lightType = LIGHT_SPOT;
 	}
-	
+
 	veh = scene_.InstantiateXML(cache.GetResource("XMLFile", "Objects/barkas.xml"), Vector3(0,30,-50),Quaternion(0,0,0));
 
 
@@ -177,7 +177,7 @@ void HandleKeyDown(StringHash eventType, VariantMap& eventData)
 		}
 
 	} else if (key == KEY_SPACE)
-	{ 
+	{
 		veh.position = cameraNode.position;
 		veh.rotation = cameraNode.rotation;
 	}
@@ -187,5 +187,5 @@ void HandleKeyDown(StringHash eventType, VariantMap& eventData)
 
 void HandleUpdate(StringHash eventType, VariantMap& eventData)
 {
-	//veh.position += veh.rotation * Vector3(0.,0.,0.2);
+	veh.position += veh.rotation * Vector3(0.,0.,0.1);
 }

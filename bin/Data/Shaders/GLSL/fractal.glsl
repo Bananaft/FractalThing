@@ -30,10 +30,10 @@ float AbsScaleRaisedTo1mIters = pow(abs(SCALE), float(1-10));
 vec4 sdfmap2(vec3 pos)
 {
   //float s = p.x;
-  vec4 p = vec4(pos * 0.02,1);
+  vec4 p = vec4(pos * 0.01,1);
 	vec4 p0 = p;  // p.w is the distance estimate
 
-	for (int i = 0; i < 9; i++)
+	for (int i = 0; i < 10; i++)
 	{
 		p.xyz = clamp(p.xyz, -1.0, 1.0) * 2.0 - p.xyz;
 
@@ -47,6 +47,6 @@ vec4 sdfmap2(vec3 pos)
 
   float dist = ((length(p.xyz) - absScalem1) / p.w - AbsScaleRaisedTo1mIters);
   //dist = max(dist,-s);
-  return vec4(0.,0.,0.,dist * 50.);
+  return vec4(0.,0.,0.,dist * 100.);
 
 }
