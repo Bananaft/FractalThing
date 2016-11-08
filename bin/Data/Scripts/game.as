@@ -26,23 +26,11 @@ void Start()
     //zone.fogStart = 100.0f;
     //zone.fogEnd = 300.0f;
 
-	Node@ planeNode = scene_.CreateChild("Plane");
-	planeNode.scale = Vector3(100.0f, 1.0f, 100.0f);
-	planeNode.position = Vector3(0.0f,12.0f,0.0f);
-	StaticModel@ planeObject = planeNode.CreateComponent("StaticModel");
-	planeObject.model = cache.GetResource("Model", "Models/Plane.mdl");
-
 	Node@ fakeboxNode = scene_.CreateChild("Plane");
 	fakeboxNode.scale = Vector3(20000.0f, 20000.0f, 20000.0f);
 	StaticModel@ fakeboxObject = fakeboxNode.CreateComponent("StaticModel");
 	fakeboxObject.model = cache.GetResource("Model", "Models/Box.mdl");
 
-
-	//Node@ lightNode = scene_.CreateChild("DirectionalLight");
-	//lightNode.direction = Vector3(0.6f, -1.0f, 0.8f); // The direction vector does not need to be normalized
-	//Light@ light = lightNode.CreateComponent("Light");
-	//light.lightType = LIGHT_DIRECTIONAL;
-	//light.color = Color(0.2f,0.1f,0.4f,1.0) * 0.01;
 
 	cameraNode = scene_.CreateChild("CamNode");
 	cameraNode.position = Vector3(0.0f , 14.0f , -20.0f);
@@ -67,18 +55,13 @@ void Start()
 	splight.fov = 30.;
 	splight.range = 250;*/
 
-/*	Node@ fooPlaneNode = cameraNode.CreateChild("Plane");
-	fooPlaneNode.scale = Vector3(150.0f, 1.0f, 150.0f);
-	fooPlaneNode.rotation = Quaternion(-90.,0.,0.);
-	fooPlaneNode.position = Vector3(0.0f,-2.0f,100.0f);
-	StaticModel@ fooPlaneObject = fooPlaneNode.CreateComponent("StaticModel");
-	fooPlaneObject.model = cache.GetResource("Model", "Models/Plane.mdl");*/
+
 
 	renderer.viewports[0] = mainVP;
 	renderpath = mainVP.renderPath.Clone();
 
 	renderer.hdrRendering = true;
-
+	//engine.maxFps = 30;
 
 	renderpath.Load(cache.GetResource("XMLFile","RenderPaths/Deferred.xml"));
 	renderpath.Append(cache.GetResource("XMLFile","PostProcess/AutoExposure.xml"));
@@ -88,8 +71,6 @@ void Start()
 
 	//renderer.specularLighting = false;
 
-	//renderer.shadowMapSize = 2048;
-	//renderer.shadowQuality = 3;
 
 	camera.farClip = 12000;
 	camera.nearClip = 0.2;
@@ -187,5 +168,5 @@ void HandleKeyDown(StringHash eventType, VariantMap& eventData)
 
 void HandleUpdate(StringHash eventType, VariantMap& eventData)
 {
-	veh.position += veh.rotation * Vector3(0.,0.,0.1);
+	//veh.position += veh.rotation * Vector3(0.,0.,0.1);
 }
