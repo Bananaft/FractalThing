@@ -1,1 +1,1 @@
-Scripts/game.as -s -v -w -deferredHWDepth -af 8
+Scripts/game.as -s -w -deferredHWDepth -af 8

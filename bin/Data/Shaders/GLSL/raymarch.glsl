@@ -96,7 +96,7 @@ void PS()
       totalDistance += distance.w;
        #ifdef PREMARCH
           distTrsh = pxsz * totalDistance * 1.4142;
-          totalDistance -= distTrsh * 0.3;
+          totalDistance -= distTrsh * 0.7;
           if(distance.w <= distTrsh || totalDistance >= cFarClipPS) break;
         #else
           if(distance.w <= 0.002 || totalDistance >= cFarClipPS) break;
@@ -126,12 +126,12 @@ void PS()
       //Normal softening powered by magic.
       normal = calcNormal(intersection, max(pow(totalDistance,1.25) * pxsz,0.001));
       float ao = calcAO(intersection,normal);
-      float fog = fdepth;//pow(fdepth,1.1);
+      float fog = min(pow(fdepth * 6.,1.5),1.);//
   #endif
 
   //gl_FragColor = vec4(ambient , 1.0);
   #ifndef PREMARCH
-    gl_FragData[0] = vec4(mix(0.02 , 0.0001*ao * (1.-fog),1.-fog));//vec4(vec3(0.3) * (1.-fog),1.0); //distance.r * 0.2
+    gl_FragData[0] = vec4(mix(0.002 , 0.0001*ao * (1.-fog),1.-fog));//vec4(vec3(0.3) * (1.-fog),1.0); //distance.r * 0.2
     gl_FragData[1] = vec4(diffColor.rgb * (1.-fog), 1.0 );
     //gl_FragData[0] = vec4(float(stps)/256,0.,0.,0.);//vec4(float(stps)/cRAY_STEPS,0.,0.,0.);//vec4(mimus , plus,0.,0.); //vec4(vec3(0.3) * (1.-fog),1.0);
     //gl_FragData[1] = vec4(0.);//vec4(diffColor.rgb * fog, 1.7 );
