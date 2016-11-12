@@ -136,14 +136,14 @@ void PS()
         minT = max(minT, sminT);
     #else
 
-      maxT = clamp(smaxT,0.,Z);
-      minT =  max(0.0, sminT);;
+      maxT =  clamp(smaxT,0.,Z);
+      minT = max(0.0, sminT);;
     #endif
 
 
-    float t = clamp(maxT - minT,0.,1000.);
+    float t = max(maxT - minT,0.);
 
-    vol = min(InScatter(cCameraPosPS + dir*minT, dir, cLightPosPS.xyz, t) * 0.2,16.);
+    vol = min(InScatter(cCameraPosPS + dir*minT, dir, cLightPosPS.xyz, t) * 0.2,32.);
 
 
     //  vol = min(InScatter(cCameraPosPS, dir, cLightPosPS.xyz, Z) * 0.5,16.);

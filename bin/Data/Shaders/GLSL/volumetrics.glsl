@@ -1,44 +1,3 @@
-
-float sphDensity( vec3  ro, vec3  rd,   // ray origin, ray direction
-                  vec3  sc, float sr,   // sphere center, sphere radius
-                  float dbuffer )       // depth buffer
-{
-    // normalize the problem to the canonical sphere
-    float ndbuffer = dbuffer / sr;
-    vec3  rc = (ro - sc)/sr;
-
-    // find intersection with sphere
-    float b = dot(rd,rc);
-    float c = dot(rc,rc) - 1.0;
-    float h = b*b - c;
-
-    // not intersecting
-    if( h<0.0 ) return 0.0;
-
-    h = sqrt( h );
-
-    //float s = 1. /(sr/h);
-
-    //float l = s * (atan( (dbuffer + b) * s) - atan( b*s ));
-
-    //return h*h*h;
-
-    float t1 = -b - h;
-    float t2 = -b + h;
-
-    // not visible (behind camera or behind ndbuffer)
-    if( t2<0.0 || t1>ndbuffer ) return 0.0;
-
-    // clip integration segment from camera to ndbuffer
-    t1 = max( t1, 0.0 );
-    t2 = min( t2, ndbuffer );
-
-    // analytical integration of an inverse squared density
-    float i1 = -(c*t1 + b*t1*t1 + t1*t1*t1/3.0);
-    float i2 = -(c*t2 + b*t2*t2 + t2*t2*t2/3.0);
-    return (i2-i1)*(3.0/4.0);
-}
-
 float InScatter(vec3 start, vec3 dir, vec3 lightPos, float d)
 {
 	// calculate quadratic coefficients a,b,c
@@ -47,9 +6,10 @@ float InScatter(vec3 start, vec3 dir, vec3 lightPos, float d)
 	float b = dot(dir, q);
 	float c = dot(q, q);
 
-	// evaluate integral
-	float s = 1. / sqrt(c - b*b);
 
+	// evaluate integral
+	float s = 1.0 /sqrt(c - b*b);
+	s = max(s,0.);
 	float l = s * (atan( (d + b) * s) - atan( b*s ));
 
 	return l;
