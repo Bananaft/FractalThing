@@ -1,6 +1,7 @@
 #include "freelookCam.as";
 Scene@ scene_;
 bool wireframe =false;
+bool fpscap =false;
 RenderPath@ renderpath;
 
 Node@ veh;
@@ -61,11 +62,14 @@ void Start()
 	renderpath = mainVP.renderPath.Clone();
 
 	renderer.hdrRendering = true;
-	//engine.maxFps = 30;
+	
 
 	renderpath.Load(cache.GetResource("XMLFile","RenderPaths/Deferred.xml"));
 	renderpath.Append(cache.GetResource("XMLFile","PostProcess/AutoExposure.xml"));
 	renderpath.Append(cache.GetResource("XMLFile","PostProcess/BloomHDR.xml"));
+	//RenderPathCommand rpc = renderpath.commands[7];
+	//rpc.pixelShaderDefines = "DEFERRED BOO";
+	//renderpath.commands[7] = rpc;
 	renderer.viewports[0].renderPath = renderpath;
 
 
@@ -79,15 +83,17 @@ void Start()
 
 	SubscribeToEvent("Update", "HandleUpdate");
 	SubscribeToEvent("PostRenderUpdate", "HandlePostRenderUpdate");
+	
+	float sc = 1700;
 
-	   for (int i=0; i<500; i++)
+	for (int i=0; i<500; i++)
 	{
 	   Node@ plightNode = scene_.CreateChild("pointlight");
-	   plightNode.position = Vector3(250-Random(500),250-Random(500),250-Random(500));
+	   plightNode.position = Vector3(sc/2-Random(sc),sc/2-Random(sc),sc/2-Random(sc));
 		Light@ plight = plightNode.CreateComponent("Light");
 		//light.lightType = LIGHT_DIRECTIONAL;
 		plight.color = Color(0.2+Random(1.0f),0.2+Random(1.0f),0.2+Random(1.0f),1.0) * (0.1 + Random(1.0f));
-		plight.range = 50 + Random(30);
+		plight.range = 100 + Random(70);
 		//plight.fov = 5+Random(120);
 		plightNode.Rotate(Quaternion(Random(360),Random(360),0.f));
 		//if (Random(1.0)>0.0) plight.lightType = LIGHT_SPOT;
@@ -117,7 +123,8 @@ void CreateConsoleAndDebugHud()
 }
 
 void HandleKeyDown(StringHash eventType, VariantMap& eventData)
-{
+{	
+	
     int key = eventData["Key"].GetInt();
 
     // Close console (if open) or exit when ESC is pressed
@@ -130,7 +137,7 @@ void HandleKeyDown(StringHash eventType, VariantMap& eventData)
     }
 
     // Toggle console with F1
-    else if (key == KEY_F1)
+    else if (key == 96)
         console.Toggle();
 
     // Toggle debug HUD with F2
@@ -157,10 +164,29 @@ void HandleKeyDown(StringHash eventType, VariantMap& eventData)
 			wireframe = true;
 		}
 
-	} else if (key == KEY_SPACE)
+	} else if (key == KEY_C)
+	{
+
+		if (fpscap){
+			engine.maxFps = 00;
+			fpscap = false;
+		} else {
+			engine.maxFps = 30;
+			fpscap = true;
+		}
+
+	}  else if (key == KEY_SPACE)
 	{
 		veh.position = cameraNode.position;
 		veh.rotation = cameraNode.rotation;
+	} else if (key == KEY_T)
+	{
+		Node@ tpnode = scene_.CreateChild("Plane");
+		tpnode.scale = Vector3(3.0f, 3.0f, 3.0f);
+		tpnode.position = cameraNode.position;
+		tpnode.rotation = cameraNode.rotation;
+		StaticModel@ tpObject = tpnode.CreateComponent("StaticModel");
+		tpObject.model = cache.GetResource("Model", "Models/Jack.mdl");
 	}
 
 

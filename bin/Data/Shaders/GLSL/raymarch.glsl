@@ -96,7 +96,7 @@ void PS()
       totalDistance += distance.w;
        #ifdef PREMARCH
           distTrsh = pxsz * totalDistance * 1.4142;
-          totalDistance -= distTrsh * 0.7;
+          totalDistance -= distTrsh * 0.4;
           if(distance.w <= distTrsh || totalDistance >= cFarClipPS) break;
         #else
           if(distance.w <= 0.002 || totalDistance >= cFarClipPS) break;
@@ -127,7 +127,12 @@ void PS()
       normal = calcNormal(intersection, max(pow(totalDistance,1.25) * pxsz,0.001));
       float ao = calcAO(intersection,normal);
       float fog = min(pow(fdepth * 6.,1.5),1.);//
+      #ifdef BOO
+        diffColor = vec3(1.0 , 0. , 0. );
+      #endif
   #endif
+
+
 
   //gl_FragColor = vec4(ambient , 1.0);
   #ifndef PREMARCH

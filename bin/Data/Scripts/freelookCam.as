@@ -22,7 +22,7 @@ void Update(float timeStep)
         if (input.keyDown[KEY_SHIFT]) MOVE_SPEED = 120.0f; 
 		else if (input.keyDown[KEY_CTRL]) MOVE_SPEED = 600.0f; 
 		else if (input.keyDown[KEY_ALT]) MOVE_SPEED = 6000.0f; 
-		else MOVE_SPEED = 5.0f;
+		else MOVE_SPEED = 15.0f;
         // Mouse sensitivity as degrees per pixel
         const float MOUSE_SENSITIVITY = 0.1 * 1/cam.zoom;
 

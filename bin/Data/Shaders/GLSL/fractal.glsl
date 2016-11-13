@@ -1,3 +1,5 @@
+
+
 float sdfmap(vec3 p)
 {
     vec3 CSize = vec3(1., 1., 1.3);
@@ -20,17 +22,12 @@ float sdfmap(vec3 p)
 
 }
 
-#define SCALE 2.577
-#define MINRAD2 .005
-float minRad2 = clamp(MINRAD2, 1.0e-15, 1.0);
-vec4 scale = vec4(SCALE, SCALE, SCALE, abs(SCALE)) / minRad2;
-float absScalem1 = abs(SCALE - 1.0);
-float AbsScaleRaisedTo1mIters = pow(abs(SCALE), float(1-10));
 
 vec4 sdfmap2(vec3 pos)
 {
+
   //float s = p.x;
-  vec4 p = vec4(pos * 0.01,1);
+  vec4 p = vec4(pos * 0.005,1);
 	vec4 p0 = p;  // p.w is the distance estimate
 
 	for (int i = 0; i < 10; i++)
@@ -39,14 +36,14 @@ vec4 sdfmap2(vec3 pos)
 
 		// sphere folding: if (r2 < minRad2) p /= minRad2; else if (r2 < 1.0) p /= r2;
 		float r2 = dot(p.xyz, p.xyz);
-		p *= clamp(max(minRad2/r2, minRad2), 0.0, 1.0);
+		p *= clamp(max(.005/r2, .005), 0.0, 1.0);
 
 		// scale, translate
-		p = p*scale + p0;
+		p = p*vec4(515.4) + p0;
 	}
 
-  float dist = ((length(p.xyz) - absScalem1) / p.w - AbsScaleRaisedTo1mIters);
+  float dist = ((length(p.xyz) - 1.577) / p.w - 0.0001);
   //dist = max(dist,-s);
-  return vec4(0.,0.,0.,dist * 100.);
+  return vec4(0.,0.,0.,dist * 200.);
 
 }
