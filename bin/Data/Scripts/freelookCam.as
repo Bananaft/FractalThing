@@ -41,7 +41,28 @@ void Update(float timeStep)
             roll = 0.0;
 			
 		if (input.keyDown['R'])
-           node.position = Vector3(0.,0.,0.);
+           node.position = Vector3(0.0f , 14.0f , -20.0f);
+		   
+		if (input.mouseButtonPress[MOUSEB_LEFT])
+		{
+			Node@ lnode = scene_.CreateChild();
+			lnode.position = node.position + node.rotation * Vector3(0,-2,-5.);
+			Light@ plight = lnode.CreateComponent("Light");
+			plight.color = Color(0.8+Random(0.4),0.6+Random(0.4),0.4+Random(0.4)) * 0.05;
+			plight.range = 30;
+			
+			flyer@ lighfly = cast<flyer>(lnode.CreateScriptObject(scriptFile, "flyer"));
+			lighfly.Init( node.rotation * Vector3(0,0,100));
+		}
+		
+		if (input.mouseButtonPress[MOUSEB_RIGHT])
+		{
+			Node@ lnode = scene_.CreateChild();
+			lnode.position = node.position + node.rotation * Vector3(0,0,5.);
+			Light@ plight = lnode.CreateComponent("Light");
+			plight.color = Color(0.2,0.8,1.2) * 0.2;
+			plight.range = 90;
+		}
 
 
 
@@ -64,9 +85,25 @@ void Update(float timeStep)
         //if (campos.y<ter_height) node.position = Vector3(campos.x, ter_height, campos.z);
     }
 
-void FixedUpdate(float timeStep)
+
+
+}
+
+class flyer : ScriptObject
+{
+	Vector3 vel;
+	float ttl = 10;
+	void Init(Vector3 invel)
+    {
+		vel = invel;
+	}
+	
+	void Update(float timeStep)
 	{
-
-    }
-
+		node.position += vel*timeStep;
+		vel *= 1 - 0.6*timeStep;
+		vel += Vector3(1 - Random(2),1 - Random(2),1 - Random(2))*10**timeStep;
+		ttl -= timeStep;
+		if (ttl<0) node.Remove();
+	}
 }

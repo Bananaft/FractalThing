@@ -120,11 +120,13 @@ float GetDiffuse(vec3 normal, vec3 worldPos, out vec3 lightDir, float ao, out fl
         #ifdef TRANSLUCENT
             return abs(dot(normal, lightDir)) * texture2D(sLightRampMap, vec2(lightDist, 0.0)).r;
         #else
+            
             float dist = max(1-lightDist,0);
             float hd = 0.5 * dist;
             float hl = pow(dot(normal, lightDir)*0.5+0.5,2.);
             float lamb = dot(normal, lightDir);
             float diff = max(mix(lamb,hl,min(dist *1.15,1.)) * pow(dist,3.6-1.6*ao), 0.0);
+            diff *= 0.7 +0.4*ao;
             //float halfdiff = max(pow(dot(normal, lightDir)*0.5+0.5,2.) * pow(max(1-lightDist,0),12.), 0.0);
             return diff;
         #endif

@@ -40,9 +40,9 @@ vec3 calcNormal( in vec3 pos , float size )
 {
 	vec3 eps = vec3( size,  0.0, 0.0 );
 	vec3 nor = vec3(
-	    sdfmap2(pos+eps.xyy).w - sdfmap2(pos-eps.xyy).w,
-	    sdfmap2(pos+eps.yxy).w - sdfmap2(pos-eps.yxy).w,
-	    sdfmap2(pos+eps.yyx).w - sdfmap2(pos-eps.yyx).w );
+	    sdfmap(pos+eps.xyy).w - sdfmap(pos-eps.xyy).w,
+	    sdfmap(pos+eps.yxy).w - sdfmap(pos-eps.yxy).w,
+	    sdfmap(pos+eps.yyx).w - sdfmap(pos-eps.yyx).w );
 	return normalize(nor);
 }
 
@@ -55,15 +55,10 @@ float calcAO( in vec3 pos, in vec3 nor )
     {
         stp *= i * 2.;
         vec3 aopos =  nor * stp + pos;
-        float dd = sdfmap2( aopos ).w;
+        float dd = sdfmap( aopos ).w;
         occ += dd;
         //if (dd<stp) break;
     }
-
-    //occ += sdfmap2(pos + nor * 0.1);
-    //occ += sdfmap2(pos + nor * 2.0);
-    //occ += sdfmap2(pos + nor * 10.0);
-    //occ += sdfmap2(pos + nor * 50.0);
 
     return min(occ * 0.3,1.);
 }
@@ -92,11 +87,11 @@ void PS()
    {
        intersection = origin + direction * totalDistance;
 
-       distance = sdfmap2(intersection);
+       distance = sdfmap(intersection);
       totalDistance += distance.w;
        #ifdef PREMARCH
           distTrsh = pxsz * totalDistance * 1.4142;
-          totalDistance -= distTrsh * 0.4;
+          totalDistance -= distTrsh * 0.5;
           if(distance.w <= distTrsh || totalDistance >= cFarClipPS) break;
         #else
           if(distance.w <= 0.002 || totalDistance >= cFarClipPS) break;
@@ -127,9 +122,6 @@ void PS()
       normal = calcNormal(intersection, max(pow(totalDistance,1.25) * pxsz,0.001));
       float ao = calcAO(intersection,normal);
       float fog = min(pow(fdepth * 6.,1.5),1.);//
-      #ifdef BOO
-        diffColor = vec3(1.0 , 0. , 0. );
-      #endif
   #endif
 
 

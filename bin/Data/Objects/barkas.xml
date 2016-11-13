@@ -3,7 +3,7 @@
 	<attribute name="Is Enabled" value="true" />
 	<attribute name="Name" value="" />
 	<attribute name="Tags" />
-	<attribute name="Position" value="0 25.3062 -33.041" />
+	<attribute name="Position" value="32.6921 28.4419 -29.0201" />
 	<attribute name="Rotation" value="1 0 0 0" />
 	<attribute name="Scale" value="1 1 1" />
 	<attribute name="Variables" />
@@ -17,7 +17,7 @@
 		<attribute name="Variables" />
 		<component type="StaticModel" id="16777228">
 			<attribute name="Model" value="Model;Models/vehicles/barkas/barkas.mdl" />
-			<attribute name="Material" value="Material;Materials/Jack.xml;;;" />
+			<attribute name="Material" value="Material;Materials/Jack.xml;;;;" />
 		</component>
 		<node id="16777219">
 			<attribute name="Is Enabled" value="true" />
@@ -62,7 +62,7 @@
 				<attribute name="Color" value="0.44 0.32 0.21 1" />
 				<attribute name="Brightness Multiplier" value="5" />
 				<attribute name="Temperature" value="6589.77" />
-				<attribute name="Range" value="34.84" />
+				<attribute name="Range" value="80" />
 				<attribute name="Spot FOV" value="54.81" />
 			</component>
 		</node>
@@ -110,7 +110,7 @@
 				<attribute name="Color" value="1 0.56 -0.36 1" />
 				<attribute name="Brightness Multiplier" value="0.97" />
 				<attribute name="Temperature" value="6589.77" />
-				<attribute name="Range" value="30" />
+				<attribute name="Range" value="60" />
 				<attribute name="Light Shape Texture" value="TextureCube;" />
 			</component>
 		</node>
@@ -127,7 +127,7 @@
 				<attribute name="Color" value="0.62 0.8 1 1" />
 				<attribute name="Brightness Multiplier" value="15.03" />
 				<attribute name="Temperature" value="6589.77" />
-				<attribute name="Range" value="200" />
+				<attribute name="Range" value="300" />
 				<attribute name="Spot FOV" value="10.66" />
 			</component>
 		</node>
@@ -175,7 +175,7 @@
 			<attribute name="Variables" />
 			<component type="Light" id="16777238">
 				<attribute name="Color" value="0.5 0.1 0.04 1" />
-				<attribute name="Brightness Multiplier" value="0.76" />
+				<attribute name="Brightness Multiplier" value="0.5" />
 				<attribute name="Temperature" value="6589.77" />
 				<attribute name="Range" value="3.29" />
 				<attribute name="Light Shape Texture" value="TextureCube;" />
@@ -191,7 +191,7 @@
 			<attribute name="Variables" />
 			<component type="Light" id="16777239">
 				<attribute name="Color" value="0.04 0.5 0.1 1" />
-				<attribute name="Brightness Multiplier" value="0.76" />
+				<attribute name="Brightness Multiplier" value="0.5" />
 				<attribute name="Temperature" value="6589.77" />
 				<attribute name="Range" value="3.29" />
 				<attribute name="Light Shape Texture" value="TextureCube;" />
