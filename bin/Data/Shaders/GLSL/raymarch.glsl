@@ -43,7 +43,7 @@ vec3 calcNormal( in vec3 pos , float size )
 	    sdfmap(pos+eps.xyy).w - sdfmap(pos-eps.xyy).w,
 	    sdfmap(pos+eps.yxy).w - sdfmap(pos-eps.yxy).w,
 	    sdfmap(pos+eps.yyx).w - sdfmap(pos-eps.yyx).w );
-	return normalize(nor);
+	return nor;
 }
 
 float calcAO( in vec3 pos, in vec3 nor )
@@ -69,7 +69,6 @@ void PS()
   vec3 locDir = normalize(vec3(vScreenPos * 2.0 -1.0,1.0) * FrustumSizePS);
   vec3 direction = (mat3(ViewPS) * locDir  );
   vec3 origin = cCameraPosPS;
-  vec3 normal;
   vec3 intersection;
   //vec3 direction = camMat * normalize( vec3(uv.xy,2.0) );
   float PREdepth =  texture2D(sSpecMap, vScreenPos).r;
@@ -119,8 +118,10 @@ void PS()
       //float mimus = max( -1000000. * (fdepth - PREdepth), 0.0 );
       //float plus = max( 10. * (fdepth - PREdepth), 0.0 );
       //Normal softening powered by magic.
-      normal = calcNormal(intersection, max(pow(totalDistance,1.25) * pxsz,0.001));
-      float ao = calcAO(intersection,normal);
+      vec3 normal = normalize(calcNormal(intersection, max(pow(totalDistance,1.25) * pxsz,0.001)));
+      vec3 bent_normal = normalize(calcNormal(intersection, 5.0));
+
+      //float ao = calcAO(intersection,normal);
       float fog = min(pow(fdepth * 6.,1.5),1.);//
   #endif
 
@@ -128,15 +129,16 @@ void PS()
 
   //gl_FragColor = vec4(ambient , 1.0);
   #ifndef PREMARCH
-    gl_FragData[0] = vec4(mix(0.002 , 0.0001*ao * (1.-fog),1.-fog));//vec4(vec3(0.3) * (1.-fog),1.0); //distance.r * 0.2
-    gl_FragData[1] = vec4(diffColor.rgb * (1.-fog), 1.0 );
+    //gl_FragData[0] = vec4(mix(0.002 , 0.0001*ao * (1.-fog),1.-fog));//vec4(vec3(0.3) * (1.-fog),1.0); //distance.r * 0.2
+    gl_FragData[0] = vec4(diffColor.rgb * (1.-fog), 1.0 );
     //gl_FragData[0] = vec4(float(stps)/256,0.,0.,0.);//vec4(float(stps)/cRAY_STEPS,0.,0.,0.);//vec4(mimus , plus,0.,0.); //vec4(vec3(0.3) * (1.-fog),1.0);
     //gl_FragData[1] = vec4(0.);//vec4(diffColor.rgb * fog, 1.7 );
 
 
 
-    gl_FragData[2] = vec4(0.5 + normal*0.5, ao);// * 0.5 + 0.5
-    gl_FragData[3] = vec4(EncodeDepth(fdepth), 0.0);//
+    gl_FragData[1] = vec4(0.5 + normal*0.5, 1.0);// * 0.5 + 0.5
+    gl_FragData[2] = vec4(EncodeDepth(fdepth), 0.0);//
+    gl_FragData[3] = vec4(0.5 + bent_normal*0.5, 1.0);
   #else
     gl_FragColor =  vec4(totalDistance ,0. , 0. , 0.);
   #endif

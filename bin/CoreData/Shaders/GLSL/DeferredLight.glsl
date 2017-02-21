@@ -83,6 +83,7 @@ void PS()
         #endif
         vec4 albedoInput = texture2D(sAlbedoBuffer, vScreenPos);
         vec4 normalInput = texture2D(sNormalBuffer, vScreenPos);
+        vec4 bentNormalInput = texture2DProj(sLightBuffer, vScreenPos);
     #else
         #ifdef HWDEPTH
             float depth = ReconstructDepth(texture2DProj(sDepthBuffer, vScreenPos).r);
@@ -97,6 +98,7 @@ void PS()
         #endif
         vec4 albedoInput = texture2DProj(sAlbedoBuffer, vScreenPos);
         vec4 normalInput = texture2DProj(sNormalBuffer, vScreenPos);
+        vec4 bentNormalInput = texture2DProj(sLightBuffer, vScreenPos);
     #endif
 
     // Position acquired via near/far ray is relative to camera. Bring position to world space
@@ -104,12 +106,15 @@ void PS()
     worldPos += cCameraPosPS;
 
     vec3 normal = normalize(normalInput.rgb * 2.0 - 1.0);
+    vec3 bent_normal = normalize(bentNormalInput.rgb * 2.0 - 1.0);
+    //normal = bent_normal;
     vec4 projWorldPos = vec4(worldPos, 1.0);
     vec3 lightColor;
     vec3 lightDir;
     float lightDist;
-    float diff = GetDiffuse(normal, worldPos, lightDir, normalInput.a, lightDist);
-
+    float diff = GetDiffuse(normal, worldPos, lightDir, normalInput.a, lightDist,bent_normal);
+    //float bentDot = clamp(dot(bent_normal,lightDir),0.,1.);
+    //diff *= bentDot;
     vec3 dir = normalize(vFarRay);
     float Z = length(eyeVec);
     float vol;

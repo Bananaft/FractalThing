@@ -1,6 +1,7 @@
 <renderpath>
     <rendertarget name="albedo" sizedivisor="1 1" format="rgba" />
     <rendertarget name="normal" sizedivisor="1 1" format="rgba" />
+    <rendertarget name="bent_normal" sizedivisor="1 1" format="rgba" />
     <rendertarget name="depth" sizedivisor="1 1" format="lineardepth" />
 
     <rendertarget name="depth4" sizedivisor="64 64" format="lineardepth" filter="false" />
@@ -40,17 +41,20 @@
     <command type="quad" tag="raymarch" vs="raymarch" ps="raymarch" psdefines="DEFERRED">
       <texture unit="depth" name="depth" />
       <texture unit="specular" name="depth1" />
-      <output index="0" name="viewport" />
-      <output index="1" name="albedo" />
-      <output index="2" name="normal" />
-      <output index="3" name="depth" />
+      <!--output index="0" name="viewport" /-->
+      <output index="0" name="albedo" />
+      <output index="1" name="normal" />
+      <output index="2" name="depth" />
+      <output index="3" name="bent_normal" />
       <parameter name="RAY_STEPS" value="30" />
     </command>
 
     <command type="lightvolumes" vs="DeferredLight" ps="DeferredLight" >
         <texture unit="albedo" name="albedo" />
         <texture unit="normal" name="normal" />
+        <texture unit="light" name="bent_normal" />
         <texture unit="depth" name="depth" />
+
     </command>
     <command type="scenepass" pass="postopaque" />
     <command type="scenepass" pass="refract">
