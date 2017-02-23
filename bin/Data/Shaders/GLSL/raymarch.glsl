@@ -119,9 +119,11 @@ void PS()
       //float plus = max( 10. * (fdepth - PREdepth), 0.0 );
       //Normal softening powered by magic.
       vec3 normal = normalize(calcNormal(intersection, max(pow(totalDistance,1.25) * pxsz,0.001)));
-      vec3 bent_normal = normalize(calcNormal(intersection, 5.0));
+      vec3 bent_normal = calcNormal(intersection, 10.0);
 
       //float ao = calcAO(intersection,normal);
+      float ao = length(bent_normal) * 0.1;
+      normalize(bent_normal);
       float fog = min(pow(fdepth * 6.,1.5),1.);//
   #endif
 
@@ -136,9 +138,9 @@ void PS()
 
 
 
-    gl_FragData[1] = vec4(0.5 + normal*0.5, 1.0);// * 0.5 + 0.5
+    gl_FragData[1] = vec4(0.5 + normal*0.5, ao);// * 0.5 + 0.5
     gl_FragData[2] = vec4(EncodeDepth(fdepth), 0.0);//
-    gl_FragData[3] = vec4(0.5 + bent_normal*0.5, 1.0);
+    gl_FragData[3] = vec4(0.5 + bent_normal*0.5, ao);
   #else
     gl_FragColor =  vec4(totalDistance ,0. , 0. , 0.);
   #endif
