@@ -48,8 +48,8 @@ void Update(float timeStep)
 			Node@ lnode = scene_.CreateChild();
 			lnode.position = node.position + node.rotation * Vector3(0,-2,-5.);
 			Light@ plight = lnode.CreateComponent("Light");
-			plight.color = Color(0.8+Random(0.4),0.6+Random(0.4),0.4+Random(0.4)) * 0.05;
-			plight.range = 30;
+			plight.color = Color(0.8+Random(0.4),0.6+Random(0.4),0.4+Random(0.4)) * 1.05;
+			plight.range = 120;
 			
 			flyer@ lighfly = cast<flyer>(lnode.CreateScriptObject(scriptFile, "flyer"));
 			lighfly.Init( node.rotation * Vector3(0,0,100));
@@ -92,7 +92,7 @@ void Update(float timeStep)
 class flyer : ScriptObject
 {
 	Vector3 vel;
-	float ttl = 10;
+	float ttl = 120;
 	void Init(Vector3 invel)
     {
 		vel = invel;
@@ -101,8 +101,8 @@ class flyer : ScriptObject
 	void Update(float timeStep)
 	{
 		node.position += vel*timeStep;
-		vel *= 1 - 0.6*timeStep;
-		vel += Vector3(1 - Random(2),1 - Random(2),1 - Random(2))*10**timeStep;
+		vel *= 1 - 0.2*timeStep;
+		vel += Vector3(1 - Random(2),1 - Random(2),1 - Random(2))*20**timeStep;
 		ttl -= timeStep;
 		if (ttl<0) node.Remove();
 	}

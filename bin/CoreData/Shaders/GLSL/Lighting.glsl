@@ -128,6 +128,7 @@ float GetDiffuse(vec3 normal, vec3 worldPos, out vec3 lightDir, float ao, out fl
             float bentDot = dot(bent_normal,lightDir);
             ao =clamp( pow(ao,0.5) * (bentDot*0.5+0.5) ,0.,1.);
             hl *= bentDot;
+            //hl *= clamp(pow(dist,2.2)+bentDot,0.,1.);
             float diff = max(mix(lamb,hl,min(dist *1.15,1.)) * pow(dist,3.6-1.6*ao), 0.0);
             diff *= 0.7 +0.4*ao;// * clamp((bentDot-lamb)*0.01,0.,1.);
             //diff *= clamp((lamb-bentDot),0.,1.);

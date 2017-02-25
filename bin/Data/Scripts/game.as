@@ -7,6 +7,7 @@ RenderPath@ renderpath;
 
 Node@ veh;
 Node@ cameraNode;
+Node@ fakeboxNode;
 UIElement@ LegendNode;
 
 void Start()
@@ -77,7 +78,7 @@ void SetupScene()
     //zone.fogStart = 100.0f;
     //zone.fogEnd = 300.0f;
 
-	Node@ fakeboxNode = scene_.CreateChild("Plane");
+	fakeboxNode = scene_.CreateChild("Plane");
 	fakeboxNode.scale = Vector3(20000.0f, 20000.0f, 20000.0f);
 	StaticModel@ fakeboxObject = fakeboxNode.CreateComponent("StaticModel");
 	fakeboxObject.model = cache.GetResource("Model", "Models/Box.mdl");
@@ -88,6 +89,8 @@ void SetupScene()
     Camera@ camera = cameraNode.CreateComponent("Camera");
 	Viewport@ mainVP = Viewport(scene_, camera);
 	renderer.viewports[0] = mainVP;
+	
+	
 	
 	renderpath = mainVP.renderPath.Clone();
 
@@ -290,5 +293,7 @@ void spawnlights (Vector3 pos, int numLights)
 
 void HandleUpdate(StringHash eventType, VariantMap& eventData)
 {
-	//veh.position += veh.rotation * Vector3(0.,0.,0.1);
+	fakeboxNode.position = cameraNode.position;
+	veh.position += veh.rotation * Vector3(0.,0.,0.1);
+	veh.Rotate(Quaternion(0.,0.2,0.));
 }
