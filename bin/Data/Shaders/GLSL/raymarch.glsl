@@ -119,7 +119,7 @@ void PS()
       //float plus = max( 10. * (fdepth - PREdepth), 0.0 );
       //Normal softening powered by magic.
       vec3 normal = normalize(calcNormal(intersection, max(pow(totalDistance,1.25) * pxsz,0.001)));
-      vec3 bent_normal = calcNormal(intersection, 10.0);
+      vec3 bent_normal = calcNormal(intersection+normal*0.7, 10.0);
 
       //float ao = calcAO(intersection,normal);
       float ao = length(bent_normal) * 0.1;
