@@ -112,7 +112,7 @@ void PS()
     vec3 lightColor;
     vec3 lightDir;
     float lightDist;
-    float diff = GetDiffuse(normal, worldPos, lightDir, normalInput.a, lightDist,bent_normal);
+    float diff = GetDiffuse(normal, worldPos, lightDir, bentNormalInput.a, lightDist,bent_normal);
     //float bentDot = clamp(dot(bent_normal,lightDir),0.,1.);
     //diff *= bentDot;
     vec3 dir = normalize(vFarRay);

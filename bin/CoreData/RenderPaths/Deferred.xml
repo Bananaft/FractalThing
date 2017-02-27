@@ -45,8 +45,14 @@
       <output index="0" name="albedo" />
       <output index="1" name="normal" />
       <output index="2" name="depth" />
-      <output index="3" name="bent_normal" />
       <parameter name="RAY_STEPS" value="30" />
+    </command>
+
+    <command type="quad" vs="ambient" ps="ambient" psdefines="DEFERRED">
+      <texture unit="depth" name="depth" />
+      <texture unit="normal" name="normal" />
+      <output index="0" name="viewport" />
+      <output index="1" name="bent_normal" />
     </command>
 
     <command type="lightvolumes" vs="DeferredLight" ps="DeferredLight" >
