@@ -91,7 +91,8 @@ void PS()
       //float mimus = max( -1000000. * (fdepth - PREdepth), 0.0 );
       //float plus = max( 10. * (fdepth - PREdepth), 0.0 );
       //Normal softening powered by magic.
-      vec3 normal = normalize(calcNormal(intersection, max(pow(totalDistance,1.25) * pxsz,0.001)));
+      float ao;
+      vec3 normal = normalize(calcNormal(intersection, max(pow(totalDistance,1.25) * pxsz,0.001),ao));
 
       //float fog = min(pow(fdepth * 6.,1.5),1.);//
   #endif

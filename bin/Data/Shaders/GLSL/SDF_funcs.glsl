@@ -1,10 +1,16 @@
-vec3 calcNormal( in vec3 pos , float size )
+vec3 calcNormal( in vec3 pos , float size, out float ao )
 {
 	vec3 eps = vec3( size,  0.0, 0.0 );
-	vec3 nor = vec3(
-	    sdfmap(pos+eps.xyy).w - sdfmap(pos-eps.xyy).w,
-	    sdfmap(pos+eps.yxy).w - sdfmap(pos-eps.yxy).w,
-	    sdfmap(pos+eps.yyx).w - sdfmap(pos-eps.yyx).w );
+
+	float x1 = sdfmap(pos+eps.xyy).w;
+	float x2 = sdfmap(pos-eps.xyy).w;
+	float y1 = sdfmap(pos+eps.yxy).w;
+	float y2 = sdfmap(pos-eps.yxy).w;
+	float z1 = sdfmap(pos+eps.yyx).w;
+	float z2 = sdfmap(pos-eps.yyx).w;
+
+	ao = x1+x2+y1+y2+z1+z2;
+	vec3 nor = vec3(x1 - x2, y1 - y2, z1 - z2);
 	return nor;
 }
 

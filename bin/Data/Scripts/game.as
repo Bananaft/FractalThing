@@ -89,6 +89,12 @@ void SetupScene()
     Camera@ camera = cameraNode.CreateComponent("Camera");
 	Viewport@ mainVP = Viewport(scene_, camera);
 	renderer.viewports[0] = mainVP;
+	Node@ testplane = cameraNode.CreateChild("testNode");
+	StaticModel@ testPlaneModel = testplane.CreateComponent("StaticModel");
+	testPlaneModel.model = cache.GetResource("Model", "Models/Plane.mdl");
+	testplane.position = Vector3(0.,-2.,100);
+	testplane.Rotate(Quaternion(-90.,0.,0.));
+	testplane.scale = Vector3(100.,100.,100.);
 	
 	
 	
