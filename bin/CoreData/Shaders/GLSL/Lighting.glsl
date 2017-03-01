@@ -114,8 +114,10 @@ float GetDiffuse(vec3 normal, vec3 worldPos, out vec3 lightDir, float ao, out fl
             return max(dot(normal, lightDir), 0.0);
         #endif
     #else
-        vec3 lightVec = (cLightPosPS.xyz - worldPos) * cLightPosPS.w;
-        lightDist = length(lightVec);
+        vec3 lightVec = (cLightPosPS.xyz - worldPos);
+        float ndist = length(lightVec);
+        lightVec *= cLightPosPS.w;
+        lightDist = ndist * cLightPosPS.w;
         lightDir = lightVec / lightDist;
         #ifdef TRANSLUCENT
             return abs(dot(normal, lightDir)) * texture2D(sLightRampMap, vec2(lightDist, 0.0)).r;
@@ -126,10 +128,16 @@ float GetDiffuse(vec3 normal, vec3 worldPos, out vec3 lightDir, float ao, out fl
             float hl = pow(dot(normal, lightDir)*0.5+0.5,2.);
             float lamb = dot(normal, lightDir);
             float bentDot = dot(bent_normal,lightDir);
-            ao =clamp( pow(ao,0.5) * (bentDot*0.5+0.5) ,0.,1.);
+            float ao2 = max((ao-0.75)*4. , 0.);
+            ao = min(pow(0.01+ao*3.,0.2),1.);
+           ndist = clamp(pow(1.-ndist*0.05,2.2),0,1.);
+           //ao += mix(ao,1.0,ndist);
+            //bentDot
+            //ao =clamp( ao * (bentDot*0.5+0.5) ,0.,1.);
+            bentDot = mix(bentDot,1.0,min(ao2+ndist,1.));
             hl *= bentDot;
-            //lamb = bentDot;
-            //hl = bentDot;
+            //lamb = hl;
+            //lamb *= bentDot;
             float diff = max(mix(lamb,hl,min(dist *1.15,1.)) * pow(dist,3.6-1.6*ao), 0.0);
             diff *= 0.7 +0.4*ao;// * clamp((bentDot-lamb)*0.01,0.,1.);
             //diff *= clamp((lamb-bentDot),0.,1.);

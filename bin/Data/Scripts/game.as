@@ -89,13 +89,14 @@ void SetupScene()
     Camera@ camera = cameraNode.CreateComponent("Camera");
 	Viewport@ mainVP = Viewport(scene_, camera);
 	renderer.viewports[0] = mainVP;
+	/*
 	Node@ testplane = cameraNode.CreateChild("testNode");
 	StaticModel@ testPlaneModel = testplane.CreateComponent("StaticModel");
 	testPlaneModel.model = cache.GetResource("Model", "Models/Plane.mdl");
 	testplane.position = Vector3(0.,-2.,100);
 	testplane.Rotate(Quaternion(-90.,0.,0.));
 	testplane.scale = Vector3(100.,100.,100.);
-	
+	//*/
 	
 	
 	renderpath = mainVP.renderPath.Clone();
@@ -259,6 +260,11 @@ void setFractalType()
 			rpc = renderpath.commands[7];
 			rpc.pixelShaderDefines = "DEFERRED FCTYP";
 			renderpath.commands[7] = rpc;
+			
+			rpc = renderpath.commands[8];
+			rpc.pixelShaderDefines = "DEFERRED FCTYP";
+			renderpath.commands[8] = rpc;
+			
 			renderer.viewports[0].renderPath = renderpath;
 		
 		} else {
@@ -272,6 +278,11 @@ void setFractalType()
 			rpc = renderpath.commands[7];
 			rpc.pixelShaderDefines = "DEFERRED";
 			renderpath.commands[7] = rpc;
+			
+			rpc = renderpath.commands[8];
+			rpc.pixelShaderDefines = "DEFERRED";
+			renderpath.commands[8] = rpc;
+			
 			renderer.viewports[0].renderPath = renderpath;
 		
 		}
