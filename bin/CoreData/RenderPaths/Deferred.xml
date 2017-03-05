@@ -51,6 +51,7 @@
     <command type="quad" vs="ambient" ps="ambient" psdefines="DEFERRED">
       <texture unit="depth" name="depth" />
       <texture unit="normal" name="normal" />
+      <texture unit="environment" name="Textures/cubemaps/sky1.xml"/>
       <output index="0" name="viewport" />
       <output index="1" name="bent_normal" />
     </command>

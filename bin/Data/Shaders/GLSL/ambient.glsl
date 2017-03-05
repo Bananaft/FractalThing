@@ -25,18 +25,26 @@ void PS()
     vec3 worldPos = cCameraPosPS + (vFarRay * depth);
 
     vec4 normalInput = texture2D(sNormalBuffer, vScreenPos);
+    vec3 normal = normalize(normalInput.rgb * 2.0 - 1.0);
     float ao;
-    vec3 bent_normal = calcNormal(worldPos+normalInput.rgb*0.7, 10.0, ao);
+    vec3 bent_normal = calcNormal(worldPos+normal*0.7, 10.0, ao);
 
     //float ao = calcAO(intersection,normal);
     //float ao = length(bent_normal) * 0.1 - 0.3;
+    float ao2 = clamp(pow(ao*0.01,9.2),0.,1.);
     ao = pow(ao*0.04,1.3);
+    ao = clamp(ao,0.,1.0);
 
     normalize(bent_normal);
+    vec3 skycol = textureCube(sEnvCubeMap, normalize(vFarRay),16.*(1.-depth)).rgb;
+    vec3 reflcol = textureCube(sEnvCubeMap,normal,16.).rgb;
 
+    float fog = clamp(pow(depth-0.001,0.9),0.,1.);
+    vec3 col = reflcol * ao*(1.-fog)+skycol*fog;
 
     //gl_FragData[0] = vec4(step(0.1,ao),step(0.5,ao),step(0.9,ao),1.0);
-    gl_FragData[0] = vec4(0.0);
+    //gl_FragData[0] = vec4(ao2);
+    gl_FragData[0] = vec4(reflcol,1.);
     gl_FragData[1] = vec4(0.5 + bent_normal*0.5, ao );
 
 }

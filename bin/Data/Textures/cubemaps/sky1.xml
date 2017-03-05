@@ -1,0 +1,12 @@
+<cubemap>
+    <srgb enable="true" />
+    <face name="sky1_posx.png" />
+    <face name="sky1_negx.png" />
+    <face name="sky1_posy.png" />
+    <face name="sky1_negy.png" />
+    <face name="sky1_posz.png" />
+    <face name="sky1_negz.png" />
+    <address coord="uv" mode="clamp" />
+    <mipmap enable="true" />
+    <filter mode="trilinear" />
+</cubemap>
