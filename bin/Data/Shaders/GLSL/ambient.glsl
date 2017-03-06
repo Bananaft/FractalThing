@@ -37,7 +37,7 @@ void PS()
 
     normalize(bent_normal);
     vec3 skycol = textureCube(sEnvCubeMap, normalize(vFarRay),16.*(1.-depth)).rgb;
-    vec3 reflcol = textureCube(sEnvCubeMap,normal,16.).rgb;
+    vec3 reflcol = textureLod(sEnvCubeMap,normal,3.+ao*9.).rgb;
 
     float fog = clamp(pow(depth-0.001,0.9),0.,1.);
     vec3 col = reflcol * ao*(1.-fog)+skycol*fog;
