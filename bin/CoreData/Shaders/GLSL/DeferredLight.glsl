@@ -105,8 +105,8 @@ void PS()
     vec3 eyeVec = -worldPos;
     worldPos += cCameraPosPS;
 
-    vec3 normal = normalize(normalInput.rgb * 2.0 - 1.0);
-    vec3 bent_normal = normalize(bentNormalInput.rgb * 2.0 - 1.0);
+    vec3 normal = (normalInput.rgb * 2.0 - 1.0);
+    vec3 bent_normal = (bentNormalInput.rgb * 2.0 - 1.0);
     //normal = bent_normal;
     vec4 projWorldPos = vec4(worldPos, 1.0);
     vec3 lightColor;

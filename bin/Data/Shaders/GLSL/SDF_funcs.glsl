@@ -9,8 +9,8 @@ vec3 calcNormal( in vec3 pos , float size, out float ao )
 	float z1 = sdfmap(pos+eps.yyx).w;
 	float z2 = sdfmap(pos-eps.yyx).w;
 
-	ao = x1+x2+y1+y2+z1+z2;
 	vec3 nor = vec3(x1 - x2, y1 - y2, z1 - z2);
+	ao = x1+x2+y1+y2+z1+z2;
 	return nor;
 }
 
