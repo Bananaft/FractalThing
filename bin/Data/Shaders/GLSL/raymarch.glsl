@@ -61,13 +61,18 @@ void PS()
 
        distance = sdfmap(intersection);
       totalDistance += distance.w;
-       #ifdef PREMARCH
+       //#ifdef PREMARCH
           distTrsh = pxsz * totalDistance * 1.4142;
+          #ifdef PREMARCH
           totalDistance -= distTrsh * 0.5;
+          #else
+            distTrsh *= 0.4;
+          #endif
+
           if(distance.w <= distTrsh || totalDistance >= cFarClipPS) break;
-        #else
-          if(distance.w <= 0.002 || totalDistance >= cFarClipPS) break;
-       #endif
+      //  #else
+      //    if(distance.w <= 0.002 || totalDistance >= cFarClipPS) break;
+      // #endif
 
 
 
@@ -91,7 +96,7 @@ void PS()
       //float mimus = max( -1000000. * (fdepth - PREdepth), 0.0 );
       //float plus = max( 10. * (fdepth - PREdepth), 0.0 );
       //Normal softening powered by magic.
-      
+
       vec3 normal = normalize(calcNormal(intersection, max(pow(totalDistance,1.25) * pxsz,0.001)));
 
       //float fog = min(pow(fdepth * 6.,1.5),1.);//
