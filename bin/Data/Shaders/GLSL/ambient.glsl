@@ -35,12 +35,13 @@ void PS()
     float ao_free = pow(length(bent_normal)*0.3,4.);
     float ao_size = 0.8;
     bent_normal = normalize(bent_normal);
-    float ao2 = (sdfmap(worldPos + bent_normal*ao_size).w+0.08)/ao_size;
+    float tap_result = sdfmap(worldPos + bent_normal*ao_size).w;
+    float ao2 = (tap_result+0.08)/ao_size;
     ao2 = max(ao2,0.03);
     ao2 = pow(ao2*2.,3.);
     //ao2 = clamp(ao2,0.,1.0);
     ao = ao2 * ao_free*0.2;
-    float final_ao = 1. - (1.0 + ao / 3.) / (1.0 + ao);
+    float final_ao = 1. - (1.0 + ao / 3.) / (1.0 + ao) + max(tap_result*0.1-0.1,0.);
 
     //final_ao = clamp(final_ao,0.,1.0);
     //float ao2 = sdfmap(worldPos+bent_normal*5)
@@ -52,12 +53,12 @@ void PS()
     float fog = clamp(pow(depth2/cFarClipPS*16.,1.1),0.,1.);
     vec3 col = reflcol * ndot*(final_ao)*(1.-fog)+skycol*fog*4.;
     //if (sdfmap(worldPos + bent_normal).w<0.0) col = vec3(1.,0.1,0.02);
-
+    if (final_ao > 0.8) col = vec3(1.,0.,0.); else col = vec3(final_ao);
 
     //gl_FragData[0] = vec4(step(0.1,ao),step(0.5,ao),step(0.9,ao),1.0);
-    //gl_FragData[0] = vec4(vec3(final_ao),0.);
+    //gl_FragData[0] = vec4(vec3(0.),0.);
     //if (vScreenPos.y>0.9)  gl_FragData[0] = vec4(vec3(1.0),0.);
     gl_FragData[0] = vec4(col*0.6,1.);
-    gl_FragData[1] = vec4(0.5 + bent_normal*0.5, ao );
+    gl_FragData[1] = vec4(0.5 + bent_normal*0.5, final_ao );
 
 }

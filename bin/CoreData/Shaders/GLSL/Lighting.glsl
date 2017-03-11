@@ -127,9 +127,10 @@ float GetDiffuse(vec3 normal, vec3 worldPos, out vec3 lightDir, float ao, out fl
             float hd = 0.5 * dist;
             float hl = pow(dot(normal, lightDir)*0.5+0.5,2.);
             float lamb = dot(normal, lightDir);
-            float bentDot = dot(bent_normal,lightDir);
-            float ao2 = max((ao-0.75)*4. , 0.);
-            ao = min(pow(0.01+ao*3.,0.2),1.);
+            float bentDot = dot(bent_normal,lightDir)*0.8+0.2;
+            float shadow_cut = 2.9;
+            float ao2 = max((ao-(1.-1./shadow_cut))*shadow_cut , 0.);
+            ao = min(pow(ao,0.2),1.);
            ndist = clamp(pow(1.-ndist*0.05,2.2),0,1.);
            //ao += mix(ao,1.0,ndist);
             //bentDot
