@@ -53,7 +53,7 @@ void PS()
     float fog = clamp(pow(depth2/cFarClipPS*16.,1.1),0.,1.);
     vec3 col = reflcol * ndot*(final_ao)*(1.-fog)+skycol*fog*4.;
     //if (sdfmap(worldPos + bent_normal).w<0.0) col = vec3(1.,0.1,0.02);
-    if (final_ao > 0.8) col = vec3(1.,0.,0.); else col = vec3(final_ao);
+    //if (final_ao > 0.8) col = vec3(1.,0.,0.); else col = vec3(final_ao);
 
     //gl_FragData[0] = vec4(step(0.1,ao),step(0.5,ao),step(0.9,ao),1.0);
     //gl_FragData[0] = vec4(vec3(0.),0.);
