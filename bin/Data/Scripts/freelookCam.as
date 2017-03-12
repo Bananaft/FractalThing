@@ -7,10 +7,12 @@ Vector3 vel;
 float boost = 8.;
 float base_speed = 45. * 2.;
 float MOVE_SPEED;
+float zoom;
 
 void Init()
     {
-
+		Camera@ cam = node.GetComponent("camera");
+		zoom = cam.zoom;
         //node.position = Vector3(0,0,0);
     }
 
@@ -25,7 +27,7 @@ void Update(float timeStep)
 		if (input.keyDown['w'] or input.keyDown['a'] or input.keyDown['d'] or input.keyDown['s'])
 		{
 			if (input.keyDown[KEY_SHIFT]) MOVE_SPEED = Lerp(MOVE_SPEED, base_speed * boost, Min(5 * timeStep,1.)); 
-			else if (input.keyDown[KEY_ALT]) MOVE_SPEED = Lerp(MOVE_SPEED, base_speed * boost * boost * boost, Min(5 * timeStep,1.)); 
+			else if (input.keyDown[KEY_ALT]) MOVE_SPEED = Lerp(MOVE_SPEED, base_speed * boost * boost, Min(5 * timeStep,1.)); 
 			else MOVE_SPEED = Lerp(MOVE_SPEED, base_speed, Min(5 * timeStep,1.)); 
 		
 		} else {
@@ -94,7 +96,8 @@ void Update(float timeStep)
         node.rotation = Quaternion(pitch, yaw, roll);
 
         int mousescroll = input.mouseMoveWheel;
-        cam.zoom = Clamp(cam.zoom + mousescroll * cam.zoom * 0.2, 0.8 , 20.0 );
+        zoom = Clamp(zoom + mousescroll * zoom * 0.2, 0.8 , 20.0 );
+		cam.zoom = Lerp(cam.zoom, zoom, Min(5 * timeStep,1.));
 		//log.Info(node.position.y);
         //check terrain collision
         //Vector3 campos = node.position;
