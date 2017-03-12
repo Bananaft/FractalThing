@@ -56,7 +56,7 @@ void PS()
     //if (final_ao > 0.8) col = vec3(1.,0.,0.); else col = vec3(final_ao);
 
     //gl_FragData[0] = vec4(step(0.1,ao),step(0.5,ao),step(0.9,ao),1.0);
-    //gl_FragData[0] = vec4(vec3(0.),0.);
+    //gl_FragData[0] = vec4(vec3(final_ao),0.);
     //if (vScreenPos.y>0.9)  gl_FragData[0] = vec4(vec3(1.0),0.);
     gl_FragData[0] = vec4(col*0.1,1.);
     gl_FragData[1] = vec4(0.5 + bent_normal*0.5, final_ao );

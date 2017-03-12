@@ -2,7 +2,7 @@
 Scene@ scene_;
 bool wireframe =false;
 bool fpscap =false;
-bool fctype =false;
+//uint fctype = 0;
 RenderPath@ renderpath;
 
 Node@ veh;
@@ -207,17 +207,6 @@ void HandleKeyDown(StringHash eventType, VariantMap& eventData)
 		tpnode.rotation = cameraNode.rotation;
 		StaticModel@ tpObject = tpnode.CreateComponent("StaticModel");
 		tpObject.model = cache.GetResource("Model", "Models/Teapot.mdl");
-	} else if (key == KEY_Z)
-	{
-		if (fctype)
-		{
-			fctype = false;
-			setFractalType();
-		} else {
-			fctype = true;
-			setFractalType();
-		}
-
 	} else if (key == KEY_E)
 	{
 		spawnlights(cameraNode.position, 6);
@@ -227,7 +216,7 @@ void HandleKeyDown(StringHash eventType, VariantMap& eventData)
 
 		scene_.RemoveAllChildren();
 		SetupScene();
-		setFractalType();
+		//setFractalType();
 		cameraNode.position = cpos;
 
 	} else if (key == KEY_F1)
@@ -238,54 +227,64 @@ void HandleKeyDown(StringHash eventType, VariantMap& eventData)
 		} else {
 			LegendNode.visible = true;
 		}
+	} else if (key == KEY_1)
+	{
+		setRndCommandParam("FCTYP_1");
+	} else if (key == KEY_2)
+	{
+		setRndCommandParam("FCTYP_2");
+	} else if (key == KEY_3)
+	{
+		setRndCommandParam("FCTYP_3");
+	} else if (key == KEY_4)
+	{
+		setRndCommandParam("FCTYP_4");
+	} else if (key == KEY_5)
+	{
+		setRndCommandParam("FCTYP_5");
+	} else if (key == KEY_6)
+	{
+		setRndCommandParam("FCTYP_6");
+	} else if (key == KEY_7)
+	{
+		setRndCommandParam("FCTYP_7");
+	} else if (key == KEY_8)
+	{
+		setRndCommandParam("FCTYP_8");
+	} else if (key == KEY_9)
+	{
+		setRndCommandParam("FCTYP_9");
 	}
 
 
 }
 
-void setFractalType()
+void setRndCommandParam(String param)
 {
-		renderpath = renderer.viewports[0].renderPath.Clone();
+	renderpath = renderer.viewports[0].renderPath.Clone();
 		RenderPathCommand rpc;
+	for (int i=3; i<7; i++)
+	{
+		rpc = renderpath.commands[i];
+		rpc.pixelShaderDefines = "PREMARCH " + param;
+		renderpath.commands[i] = rpc;
+	}
+	rpc = renderpath.commands[7];
+	rpc.pixelShaderDefines = "DEFERRED " + param;
+	renderpath.commands[7] = rpc;
+	
+	rpc = renderpath.commands[8];
+	rpc.pixelShaderDefines = "DEFERRED "  + param;
+	renderpath.commands[8] = rpc;
+	
+	renderer.viewports[0].renderPath = renderpath;
 		
-		if (fctype)
-		{
+}
 
-			for (int i=3; i<7; i++)
-			{
-				rpc = renderpath.commands[i];
-				rpc.pixelShaderDefines = "PREMARCH FCTYP";
-				renderpath.commands[i] = rpc;
-			}
-			rpc = renderpath.commands[7];
-			rpc.pixelShaderDefines = "DEFERRED FCTYP";
-			renderpath.commands[7] = rpc;
-			
-			rpc = renderpath.commands[8];
-			rpc.pixelShaderDefines = "DEFERRED FCTYP";
-			renderpath.commands[8] = rpc;
-			
-			renderer.viewports[0].renderPath = renderpath;
+void setFractalType(int fctNum)
+{
 		
-		} else {
-			
-			for (int i=3; i<7; i++)
-			{
-				rpc = renderpath.commands[i];
-				rpc.pixelShaderDefines = "PREMARCH";
-				renderpath.commands[i] = rpc;
-			}
-			rpc = renderpath.commands[7];
-			rpc.pixelShaderDefines = "DEFERRED";
-			renderpath.commands[7] = rpc;
-			
-			rpc = renderpath.commands[8];
-			rpc.pixelShaderDefines = "DEFERRED";
-			renderpath.commands[8] = rpc;
-			
-			renderer.viewports[0].renderPath = renderpath;
-		
-		}
+
 }
 
 void spawnlights (Vector3 pos, int numLights)
