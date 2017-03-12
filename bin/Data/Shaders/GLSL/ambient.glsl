@@ -47,7 +47,7 @@ void PS()
     //float ao2 = sdfmap(worldPos+bent_normal*5)
 
 
-    vec3 skycol = textureCube(sEnvCubeMap, normalize(vFarRay),16.*(1.-depth2/cFarClipPS)).rgb;
+    vec3 skycol = textureCube(sEnvCubeMap, normalize(vFarRay),9.*(1.-depth2/cFarClipPS)).rgb;
     vec3 reflcol = textureLod(sEnvCubeMap,normal,3.+final_ao*9.).rgb;
     float ndot = max(dot(normal,bent_normal)*0.2+0.8,0.);
     float fog = clamp(pow(depth2/cFarClipPS*16.,1.1),0.,1.);
@@ -58,7 +58,7 @@ void PS()
     //gl_FragData[0] = vec4(step(0.1,ao),step(0.5,ao),step(0.9,ao),1.0);
     //gl_FragData[0] = vec4(vec3(0.),0.);
     //if (vScreenPos.y>0.9)  gl_FragData[0] = vec4(vec3(1.0),0.);
-    gl_FragData[0] = vec4(col*0.6,1.);
+    gl_FragData[0] = vec4(col*0.1,1.);
     gl_FragData[1] = vec4(0.5 + bent_normal*0.5, final_ao );
 
 }
