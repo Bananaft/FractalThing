@@ -1,3 +1,5 @@
+#define pi 3.14159
+
 float hash(float h) {
 	return fract(sin(h) * 43758.5453123);
 }
@@ -87,9 +89,44 @@ vec4 sdfmap(vec3 pos)
     float apodist = 0.1 * (7+pos.y) - apo(apopos * 0.5, .0274,9) * 2.;
     dist = 0.2  * (pos.y+20.) + noise;
     dist = min(mix(pos.y,noise,0.89) -(apodist),dist+apodist);
+  #else
+  #ifdef FCTYP_3
+
+    //float t = cElapsedTimePS * 0.08;
+    pos *= 1./400.;
+    mat3 rot = mat3(
+      0.754,0.4893,0.4381,
+      0.5279,-0.0548,-0.8475,
+      -0.3908,0.8703,-0.2997
+      );
+    //vec4 c = 0.5*vec4(cos(t),cos(t*1.1),cos(t*2.3),cos(t*3.1));
+    vec4 c = vec4(-0.32,0.59,-0.29,0.32);
+    vec4 z = vec4( pos, 0.0 );
+    vec4 nz;
+
+    float md2 = 1.0;
+    float mz2 = dot(z,z);
+
+    for(int i=0;i<12;i++)
+    {
+
+      md2*=4.0*mz2;
+        nz.x=z.x*z.x-dot(z.yzw,z.yzw);
+      nz.yzw=2.0*z.x*z.yzw;
+      z=nz+c;
+
+      mz2 = dot(z,z);
+      if(mz2>4.0) break;
+      //z.yzw *= rot;
+      //z.zwy *= rot;
+      //c.yzw *= rot;
+    }
+
+    dist = 400. * 0.25*sqrt(mz2/md2)*log(mz2);
 
   #else
     dist = apo(pos, .0274,12);
+  #endif
   #endif
   #endif
 
