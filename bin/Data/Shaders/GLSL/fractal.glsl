@@ -1,4 +1,16 @@
 #define pi 3.14159
+/*mat3 rot = mat3(
+  0.754,0.4893,0.4381,
+  0.5279,-0.0548,-0.8475,
+  -0.3908,0.8703,-0.2997
+  );//*/
+mat3 rot = mat3(
+  0.9997,-0.0116,-0.0215,
+  0.0087,0.992,-0.1256,
+  0.0226,0.1253,0.9918
+  );//*/
+
+
 
 float hash(float h) {
 	return fract(sin(h) * 43758.5453123);
@@ -39,10 +51,11 @@ float apo(vec3 pos, float seed, int steps)
       p = 2.0*clamp(p, -CSize, CSize) - p;
       r2 = dot(p,p);
       //float r2 = dot(p,p+sin(p.z*.3)); //Alternate fractal
-      k = max((2.0)/(r2), seed); //.378888 //.13345 max((2.6)/(r2), .03211); //max((1.8)/(r2), .0018);
+      k = max((2.5)/(r2*1.5), 0.01); //.378888 //.13345 max((2.6)/(r2), .03211); //max((1.8)/(r2), .0018);
       p     *= k;
       scale *= k;
       uggg += r2;
+      p *= rot;
   }
   float l = length(p.xy);
   float rxy = l - 4.0;
@@ -71,6 +84,7 @@ vec4 sdfmap(vec3 pos)
 
   		// scale, translate
   		p = p*vec4(515.4) + p0;
+      p.xyz *= rot;
   	}
 
     dist = ((length(p.xyz) - 1.577) / p.w - 0.00013) * 200.;
@@ -94,11 +108,7 @@ vec4 sdfmap(vec3 pos)
 
     //float t = cElapsedTimePS * 0.08;
     pos *= 1./400.;
-    mat3 rot = mat3(
-      0.754,0.4893,0.4381,
-      0.5279,-0.0548,-0.8475,
-      -0.3908,0.8703,-0.2997
-      );
+
     //vec4 c = 0.5*vec4(cos(t),cos(t*1.1),cos(t*2.3),cos(t*3.1));
     vec4 c = vec4(-0.32,0.59,-0.29,0.32);
     vec4 z = vec4( pos, 0.0 );
@@ -107,7 +117,7 @@ vec4 sdfmap(vec3 pos)
     float md2 = 1.0;
     float mz2 = dot(z,z);
 
-    for(int i=0;i<12;i++)
+    for(int i=0;i<16;i++)
     {
 
       md2*=4.0*mz2;
