@@ -5,8 +5,8 @@
   -0.3908,0.8703,-0.2997
   );//*/
 mat3 rot = mat3(
-  0.9997,-0.0116,-0.0215,
-  0.0087,0.992,-0.1256,
+  0.9997,-0.0116,-0.1215,
+  0.0287,0.992,-0.1256,
   0.0226,0.1253,0.9918
   );//*/
 
@@ -46,16 +46,28 @@ float apo(vec3 pos, float seed, int steps)
   float r2 = 0.;
   float k = 0.;
   float uggg = 0.;
-  for( int i=0; i < steps;i++ )
+  for( int i=0; i < steps-5;i++ )
   {
       p = 2.0*clamp(p, -CSize, CSize) - p;
       r2 = dot(p,p);
       //float r2 = dot(p,p+sin(p.z*.3)); //Alternate fractal
-      k = max((2.5)/(r2*1.5), 0.01); //.378888 //.13345 max((2.6)/(r2), .03211); //max((1.8)/(r2), .0018);
+      k = max((2.0)/(r2), seed); //.378888 //.13345 max((2.6)/(r2), .03211); //max((1.8)/(r2), .0018);
       p     *= k;
       scale *= k;
       uggg += r2;
       p *= rot;
+  }
+
+  for( int i=0; i < 5;i++ )
+  {
+      p = 2.0*clamp(p, -CSize, CSize) - p;
+      r2 = dot(p,p);
+      //float r2 = dot(p,p+sin(p.z*.3)); //Alternate fractal
+      k = max((2.0)/(r2), seed); //.378888 //.13345 max((2.6)/(r2), .03211); //max((1.8)/(r2), .0018);
+      p     *= k;
+      scale *= k;
+      uggg += r2;
+      //p *= rot;
   }
   float l = length(p.xy);
   float rxy = l - 4.0;
@@ -89,8 +101,7 @@ vec4 sdfmap(vec3 pos)
 
     dist = ((length(p.xyz) - 1.577) / p.w - 0.00013) * 200.;
     //dist = max(dist,-s);
-  #else
-  #ifdef FCTYP_2
+  #elif defined FCTYP_2
 
     vec3 npos = pos;
 
@@ -103,8 +114,7 @@ vec4 sdfmap(vec3 pos)
     float apodist = 0.1 * (7+pos.y) - apo(apopos * 0.5, .0274,9) * 2.;
     dist = 0.2  * (pos.y+20.) + noise;
     dist = min(mix(pos.y,noise,0.89) -(apodist),dist+apodist);
-  #else
-  #ifdef FCTYP_3
+  #elif defined FCTYP_3
 
     //float t = cElapsedTimePS * 0.08;
     pos *= 1./400.;
@@ -136,8 +146,6 @@ vec4 sdfmap(vec3 pos)
 
   #else
     dist = apo(pos, .0274,12);
-  #endif
-  #endif
   #endif
 
   return vec4(0.,0.,0.,dist);
