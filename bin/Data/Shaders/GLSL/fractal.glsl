@@ -1,4 +1,5 @@
 #define pi 3.14159
+uniform int Iterations;
 /*mat3 rot = mat3(
   0.754,0.4893,0.4381,
   0.5279,-0.0548,-0.8475,
@@ -46,19 +47,7 @@ float apo(vec3 pos, float seed, int steps)
   float r2 = 0.;
   float k = 0.;
   float uggg = 0.;
-  for( int i=0; i < steps-5;i++ )
-  {
-      p = 2.0*clamp(p, -CSize, CSize) - p;
-      r2 = dot(p,p);
-      //float r2 = dot(p,p+sin(p.z*.3)); //Alternate fractal
-      k = max((2.0)/(r2), seed); //.378888 //.13345 max((2.6)/(r2), .03211); //max((1.8)/(r2), .0018);
-      p     *= k;
-      scale *= k;
-      uggg += r2;
-      p *= rot;
-  }
-
-  for( int i=0; i < 5;i++ )
+  for( int i=0; i < 16;i++ )
   {
       p = 2.0*clamp(p, -CSize, CSize) - p;
       r2 = dot(p,p);
