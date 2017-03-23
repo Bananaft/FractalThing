@@ -20,12 +20,12 @@
     </command>
 
     <command type="quad" tag="premarch" vs="raymarch" ps="raymarch" psdefines="PREMARCH" output="depth4">
-      <parameter name="RAY_STEPS" value="100" />
+      <parameter name="RAY_STEPS" value="96" />
     </command>
 
     <command type="quad" tag="premarch" vs="raymarch" ps="raymarch" psdefines="PREMARCH" output="depth3">
       <texture unit="specular" name="depth4" />
-      <parameter name="RAY_STEPS" value="100" />
+      <parameter name="RAY_STEPS" value="96" />
     </command>
 
     <command type="quad" tag="premarch" vs="raymarch" ps="raymarch" psdefines="PREMARCH" output="depth2">
@@ -35,7 +35,7 @@
 
     <command type="quad" tag="premarch" vs="raymarch" ps="raymarch" psdefines="PREMARCH" output="depth1">
       <texture unit="specular" name="depth2" />
-      <parameter name="RAY_STEPS" value="100" />
+      <parameter name="RAY_STEPS" value="96" />
     </command>
 
     <command type="quad" tag="raymarch" vs="raymarch" ps="raymarch" psdefines="DEFERRED">
@@ -45,10 +45,10 @@
       <output index="0" name="albedo" />
       <output index="1" name="normal" />
       <output index="2" name="depth" />
-      <parameter name="RAY_STEPS" value="30" />
+      <parameter name="RAY_STEPS" value="32" />
     </command>
 
-    <command type="quad" vs="ambient" ps="ambient" psdefines="DEFERRED">
+    <command type="quad" vs="ambient" ps="ambient" psdefines="DEFERRED FOG">
       <texture unit="depth" name="depth" />
       <texture unit="normal" name="normal" />
       <texture unit="environment" name="Textures/cubemaps/sky1.xml"/>

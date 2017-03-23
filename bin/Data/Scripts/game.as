@@ -2,6 +2,7 @@
 Scene@ scene_;
 bool wireframe =false;
 bool fpscap =false;
+bool fog = true;
 //uint fctype = 0;
 RenderPath@ renderpath;
 
@@ -89,6 +90,7 @@ void SetupScene()
     Camera@ camera = cameraNode.CreateComponent("Camera");
 	Viewport@ mainVP = Viewport(scene_, camera);
 	renderer.viewports[0] = mainVP;
+	
 	/*
 	Node@ testplane = cameraNode.CreateChild("testNode");
 	StaticModel@ testPlaneModel = testplane.CreateComponent("StaticModel");
@@ -195,7 +197,17 @@ void HandleKeyDown(StringHash eventType, VariantMap& eventData)
 			fpscap = true;
 		}
 
-	}  else if (key == KEY_SPACE)
+	} else if (key == KEY_N)
+	{
+
+		if (fog){
+			fog = false;
+		} else {
+			
+			fog = true;
+		}
+
+	} else if (key == KEY_SPACE)
 	{
 		veh.position = cameraNode.position;
 		veh.rotation = cameraNode.rotation;
@@ -262,7 +274,10 @@ void HandleKeyDown(StringHash eventType, VariantMap& eventData)
 void setRndCommandParam(String param)
 {
 	renderpath = renderer.viewports[0].renderPath.Clone();
-		RenderPathCommand rpc;
+	RenderPathCommand rpc;
+	
+	
+	
 	for (int i=3; i<7; i++)
 	{
 		rpc = renderpath.commands[i];
@@ -273,6 +288,7 @@ void setRndCommandParam(String param)
 	rpc.pixelShaderDefines = "DEFERRED " + param;
 	renderpath.commands[7] = rpc;
 	
+	if (fog) param += " FOG";
 	rpc = renderpath.commands[8];
 	rpc.pixelShaderDefines = "DEFERRED "  + param;
 	renderpath.commands[8] = rpc;

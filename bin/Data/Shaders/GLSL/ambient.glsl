@@ -45,13 +45,15 @@ void PS()
 
     //final_ao = clamp(final_ao,0.,1.0);
     //float ao2 = sdfmap(worldPos+bent_normal*5)
+    vec3 col = vec3(0.);
 
-
-    vec3 skycol = textureCube(sEnvCubeMap, normalize(vFarRay),9.*(1.-depth2/cFarClipPS)).rgb;
-    vec3 reflcol = textureLod(sEnvCubeMap,normal,3.+final_ao*9.).rgb;
-    float ndot = max(dot(normal,bent_normal)*0.2+0.8,0.);
-    float fog = clamp(pow(depth2/cFarClipPS*16.,1.1),0.,1.);
-    vec3 col = reflcol * ndot*(final_ao)*(1.-fog)+skycol*fog*4.;
+    #ifdef FOG
+      vec3 skycol = textureCube(sEnvCubeMap, normalize(vFarRay),9.*(1.-depth2/cFarClipPS)).rgb;
+      vec3 reflcol = textureLod(sEnvCubeMap,normal,3.+final_ao*9.).rgb;
+      float ndot = max(dot(normal,bent_normal)*0.2+0.8,0.);
+      float fog = clamp(pow(depth2/cFarClipPS*16.,1.1),0.,1.);
+      col = reflcol * ndot*(final_ao)*(1.-fog)+skycol*fog*4.;
+    #endif
     //if (sdfmap(worldPos + bent_normal).w<0.0) col = vec3(1.,0.1,0.02);
     //if (final_ao > 0.8) col = vec3(1.,0.,0.); else col = vec3(final_ao);
 

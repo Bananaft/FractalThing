@@ -57,19 +57,20 @@ void PS()
 
   for(int i =0 ;  i < cRAY_STEPS; ++i) ////// Rendering main scene
    {
-       intersection = origin + direction * totalDistance;
 
-       distance = sdfmap(intersection);
-      totalDistance += distance.w;
-       //#ifdef PREMARCH
-          distTrsh = pxsz * totalDistance * 1.4142;
-          #ifdef PREMARCH
-          totalDistance -= distTrsh * 0.5;
-          #else
-            distTrsh *= 0.4;
-          #endif
+        intersection = origin + direction * totalDistance;
 
-          if(distance.w <= distTrsh || totalDistance >= cFarClipPS) break;
+        distance = sdfmap(intersection);
+        totalDistance += distance.w;
+        //#ifdef PREMARCH
+        distTrsh = pxsz * totalDistance * 1.4142;
+        #ifdef PREMARCH
+        totalDistance -= distTrsh * 0.5;
+        #else
+          distTrsh *= 0.4;
+        #endif
+    
+      if(distance.w <= distTrsh || totalDistance >= cFarClipPS) break;
       //  #else
       //    if(distance.w <= 0.002 || totalDistance >= cFarClipPS) break;
       // #endif
