@@ -2,7 +2,9 @@ class world : ScriptObject
 {
 	bool liveUpdate = false;
 	String FractalType = "FCTYP_1";
-	int steps = 9;
+	float steps = 9.;
+	
+	//Matrix3 rotmat;
 	
 	void Init()
 	{
@@ -12,15 +14,14 @@ class world : ScriptObject
 	void Update(float timeStep)
 	{
 		if(liveUpdate) UpdateParams();
+		
 	}
 	
 	void UpdateParams()
 	{
 		//renderer.specularLighting = false;
 		RenderPath@ renderpath = renderer.viewports[0].renderPath.Clone();
-		
-		renderpath.shaderParameters['Iterations'] = Variant(steps);
-		
+		renderpath.shaderParameters["Iterations"] = steps;
 		RenderPathCommand rpc;
 				
 

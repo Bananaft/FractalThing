@@ -1,5 +1,6 @@
 #define pi 3.14159
-uniform int Iterations;
+
+uniform float cIterations;
 /*mat3 rot = mat3(
   0.754,0.4893,0.4381,
   0.5279,-0.0548,-0.8475,
@@ -47,7 +48,7 @@ float apo(vec3 pos, float seed, int steps)
   float r2 = 0.;
   float k = 0.;
   float uggg = 0.;
-  for( int i=0; i < 16;i++ )
+  for( int i=0; i < cIterations;i++ )
   {
       p = 2.0*clamp(p, -CSize, CSize) - p;
       r2 = dot(p,p);
