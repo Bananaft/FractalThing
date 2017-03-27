@@ -8,6 +8,16 @@
 //out vec4 fragData[4];
 //#define gl_FragData fragData
 
+#if defined STEP32
+const int raysteps = 32;
+#elif defined STEP96
+const int raysteps = 96;
+#elif defined STEP192
+const int raysteps = 192;
+#else
+const int raysteps = 16;
+#endif
+
 uniform float cRAY_STEPS;
 
 varying vec2 vScreenPos;
@@ -69,7 +79,7 @@ void PS()
         #else
           distTrsh *= 0.4;
         #endif
-    
+
       if(distance.w <= distTrsh || totalDistance >= cFarClipPS) break;
       //  #else
       //    if(distance.w <= 0.002 || totalDistance >= cFarClipPS) break;

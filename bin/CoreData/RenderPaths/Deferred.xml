@@ -19,30 +19,30 @@
         <output index="3" name="depth" />
     </command>
 
-    <command type="quad" tag="premarch" vs="raymarch" ps="raymarch" psdefines="PREMARCH" output="depth4">
+    <command type="quad" tag="premarch" vs="raymarch" ps="raymarch" psdefines="PREMARCH STEP96" output="depth4">
       <parameter name="RAY_STEPS" value="96" />
       <parameter name="Iterations" value="9" />
     </command>
 
-    <command type="quad" tag="premarch" vs="raymarch" ps="raymarch" psdefines="PREMARCH" output="depth3">
+    <command type="quad" tag="premarch" vs="raymarch" ps="raymarch" psdefines="PREMARCH STEP96" output="depth3">
       <texture unit="specular" name="depth4" />
       <parameter name="RAY_STEPS" value="96" />
       <parameter name="Iterations" value="9" />
     </command>
 
-    <command type="quad" tag="premarch" vs="raymarch" ps="raymarch" psdefines="PREMARCH" output="depth2">
+    <command type="quad" tag="premarch" vs="raymarch" ps="raymarch" psdefines="PREMARCH STEP192" output="depth2">
       <texture unit="specular" name="depth3" />
-      <parameter name="RAY_STEPS" value="200" />
+      <parameter name="RAY_STEPS" value="192" />
       <parameter name="Iterations" value="9" />
     </command>
 
-    <command type="quad" tag="premarch" vs="raymarch" ps="raymarch" psdefines="PREMARCH" output="depth1">
+    <command type="quad" tag="premarch" vs="raymarch" ps="raymarch" psdefines="PREMARCH STEP96" output="depth1">
       <texture unit="specular" name="depth2" />
       <parameter name="RAY_STEPS" value="96" />
       <parameter name="Iterations" value="9" />
     </command>
 
-    <command type="quad" tag="raymarch" vs="raymarch" ps="raymarch" psdefines="DEFERRED">
+    <command type="quad" tag="raymarch" vs="raymarch" ps="raymarch" psdefines="DEFERRED STEP32">
       <texture unit="depth" name="depth" />
       <texture unit="specular" name="depth1" />
       <!--output index="0" name="viewport" /-->
