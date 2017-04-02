@@ -35,13 +35,13 @@ void PS()
     float ao_free = pow(length(bent_normal)*0.3,4.);
     float ao_size = 0.8;
     bent_normal = normalize(bent_normal);
-    float tap_result = sdfmap(worldPos + bent_normal*ao_size).w;
+    float tap_result = max(sdfmap(worldPos + bent_normal*ao_size).w,0.);
     float ao2 = (tap_result+0.08)/ao_size;
     ao2 = max(ao2,0.03);
     ao2 = pow(ao2*2.,3.);
     //ao2 = clamp(ao2,0.,1.0);
     ao = ao2 * ao_free*0.2;
-    float final_ao = 1. - (1.0 + ao / 3.) / (1.0 + ao) + max(tap_result*0.1-0.1,0.);
+    float final_ao = 1. - (1.0 + ao / 3.) / (1.0 + ao) + tap_result*0.1;
 
     //final_ao = clamp(final_ao,0.,1.0);
     //float ao2 = sdfmap(worldPos+bent_normal*5)
@@ -49,9 +49,9 @@ void PS()
 
     #ifdef FOG
       vec3 skycol = textureCube(sEnvCubeMap, normalize(vFarRay),9.*(1.-depth2/cFarClipPS)).rgb;
-      vec3 reflcol = textureLod(sEnvCubeMap,normal,3.+final_ao*9.).rgb;
+      vec3 reflcol = textureLod(sEnvCubeMap,mix(normal,bent_normal,final_ao),5.+final_ao*6.).rgb;
       float ndot = max(dot(normal,bent_normal)*0.2+0.8,0.);
-      float fog = clamp(pow(depth2/cFarClipPS*16.,1.1),0.,1.);
+      float fog = clamp(pow(depth2/cFarClipPS*6.,1.1),0.,1.);
       col = reflcol * ndot*(final_ao)*(1.-fog)+skycol*fog*4.;
     #endif
     //if (sdfmap(worldPos + bent_normal).w<0.0) col = vec3(1.,0.1,0.02);

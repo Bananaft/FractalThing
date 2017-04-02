@@ -48,7 +48,7 @@ float apo(vec3 pos, float seed, int steps)
   float r2 = 0.;
   float k = 0.;
   float uggg = 0.;
-  for( int i=0; i < cIterations;i++ )
+  for( int i=0; i < 12;i++ )
   {
       p = 2.0*clamp(p, -CSize, CSize) - p;
       r2 = dot(p,p);
@@ -86,7 +86,7 @@ vec4 sdfmap(vec3 pos)
 
   		// scale, translate
   		p = p*vec4(515.4) + p0;
-      p.xyz *= rot;
+    //  p.xyz *= rot;
   	}
 
     dist = ((length(p.xyz) - 1.577) / p.w - 0.00013) * 200.;
