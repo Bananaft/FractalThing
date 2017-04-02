@@ -9,11 +9,11 @@ float InScatter(vec3 start, vec3 dir, vec3 lightPos, float d, float range)
 
 	// evaluate integral
 	//float s = 1.0 /sqrt(c - b*b);
-	float s = 1./pow(c - b*b,0.5) - 1.*range;
+	float s = 1./pow(c - b*b,0.5) - range;
 
-	s = max(s,0.0);
+	//s = max(s,0.0);
 	float l = s * (atan( (d + b) * s) - atan( b*s));
-
+	l = max(l,0.0);
 	return l;
 }
 
