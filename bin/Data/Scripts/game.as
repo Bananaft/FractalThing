@@ -3,6 +3,7 @@ Scene@ scene_;
 bool wireframe =false;
 bool fpscap =false;
 bool fog = true;
+String  fractaltyp = " ";
 //uint fctype = 0;
 RenderPath@ renderpath;
 
@@ -10,6 +11,7 @@ Node@ veh;
 Node@ cameraNode;
 Node@ fakeboxNode;
 UIElement@ LegendNode;
+
 
 void Start()
 {
@@ -202,9 +204,11 @@ void HandleKeyDown(StringHash eventType, VariantMap& eventData)
 
 		if (fog){
 			fog = false;
+			setRndCommandParam(fractaltyp);
 		} else {
 			
 			fog = true;
+			setRndCommandParam(fractaltyp);
 		}
 
 	} else if (key == KEY_SPACE)
@@ -241,31 +245,40 @@ void HandleKeyDown(StringHash eventType, VariantMap& eventData)
 		}
 	} else if (key == KEY_1)
 	{
-		setRndCommandParam("FCTYP_1");
+		fractaltyp = "FCTYP_1";
+		setRndCommandParam(fractaltyp);
 	} else if (key == KEY_2)
 	{
-		setRndCommandParam("FCTYP_2");
+		fractaltyp = "FCTYP_2";
+		setRndCommandParam(fractaltyp);
 	} else if (key == KEY_3)
 	{
-		setRndCommandParam("FCTYP_3");
+		fractaltyp = "FCTYP_3";
+		setRndCommandParam(fractaltyp);
 	} else if (key == KEY_4)
 	{
-		setRndCommandParam("FCTYP_4");
+		fractaltyp = "FCTYP_4";
+		setRndCommandParam(fractaltyp);
 	} else if (key == KEY_5)
 	{
-		setRndCommandParam("FCTYP_5");
+		fractaltyp = "FCTYP_5";
+		setRndCommandParam(fractaltyp);
 	} else if (key == KEY_6)
 	{
-		setRndCommandParam("FCTYP_6");
+		fractaltyp = "FCTYP_6";
+		setRndCommandParam(fractaltyp);
 	} else if (key == KEY_7)
 	{
-		setRndCommandParam("FCTYP_7");
+		fractaltyp = "FCTYP_7";
+		setRndCommandParam(fractaltyp);
 	} else if (key == KEY_8)
 	{
-		setRndCommandParam("FCTYP_8");
+		fractaltyp = "FCTYP_8";
+		setRndCommandParam(fractaltyp);
 	} else if (key == KEY_9)
 	{
-		setRndCommandParam("FCTYP_9");
+		fractaltyp = "FCTYP_9";
+		setRndCommandParam(fractaltyp);
 	}
 
 

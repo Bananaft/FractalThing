@@ -38,10 +38,10 @@ float noise3d(vec3 x) {
 					mix(hash(n + 270.0), hash(n + 271.0), f.x), f.y), f.z);
 }
 
-float apo(vec3 pos, float seed, int steps)
+float apo(vec3 pos, float seed,vec3 CSize, vec3 C)
 {
   float dist;
-  vec3 CSize = vec3(1., 1., 1.3);
+  //vec3 CSize = vec3(1., 1., 1.3);
   vec3 p = pos.xzy;
   float scale = 1.0;
 
@@ -57,6 +57,7 @@ float apo(vec3 pos, float seed, int steps)
       p     *= k;
       scale *= k;
       uggg += r2;
+      p+=C;
       //p *= rot;
   }
   float l = length(p.xy);
@@ -92,18 +93,7 @@ vec4 sdfmap(vec3 pos)
     dist = ((length(p.xyz) - 1.577) / p.w - 0.00013) * 200.;
     //dist = max(dist,-s);
   #elif defined FCTYP_2
-
-    vec3 npos = pos;
-
-    npos.xz *= 0.6;
-
-    float noise = noise3d(npos * 0.1) * 10.;
-
-    vec3 apopos = pointRepetition(pos,vec3(500.,0,500.));
-
-    float apodist = 0.1 * (7+pos.y) - apo(apopos * 0.5, .0274,9) * 2.;
-    dist = 0.2  * (pos.y+20.) + noise;
-    dist = min(mix(pos.y,noise,0.89) -(apodist),dist+apodist);
+      dist = apo(pos, 0.01, vec3(1.4,0.87, 1.1), vec3(0.02,-0.33332,-0.09092));
   #elif defined FCTYP_3
 
     //float t = cElapsedTimePS * 0.08;
@@ -135,7 +125,7 @@ vec4 sdfmap(vec3 pos)
     dist = 400. * 0.25*sqrt(mz2/md2)*log(mz2);
 
   #else
-    dist = apo(pos, .0274,12);
+    dist = apo(pos, .0274, vec3(1., 1., 1.3), vec3(0.));
   #endif
 
   return vec4(0.,0.,0.,dist);
