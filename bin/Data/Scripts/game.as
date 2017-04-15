@@ -16,10 +16,10 @@ UIElement@ LegendNode;
 void Start()
 {
 	graphics.windowTitle = "Yedoma Globula fractal techdemo";
-	graphics.SetMode(1280,720);
-	//graphics.Maximize();
-	//graphics.height = 720;
-	//graphics.width = 1280;
+	//graphics.SetMode(1280,720);
+	//		SetMode (int width, int height, bool fullscreen, bool borderless, bool resizable, bool highDPI, bool vsync, bool tripleBuffer, int multiSample)
+	//graphics.SetMode(1280,    720,        false,           false,             true,               false,       false,      false,            0);
+	
 	cache.autoReloadResources = true;
 
     scene_ = Scene();
@@ -54,19 +54,20 @@ void Start()
 	helpText.text =
 					"F1 - toggle help \n"
 					"F2 - show profiler \n"
-					"F12 - take screenshot \n"
-					"alt+Enter - switch fullscreen \n\n"
+					"F12 - take screenshot \n\n"
 					
 					"WASD and Mouse - move camera around\n"
 					"Mouse wheel - Zoom\n"
 					"Shift - move faster \n"
 					"Ctrl - move slower \n"
-					"Alt - super speed \n"
-					"Space - move vessel to camera position\n"
+					"Alt - super speed \n\n"
+					
 					"E - spawn some random big lights around\n"
 					"LMB - shoot flying lights \n"
 					"RMB - spawn single blue light\n"
-					"T -  spawn teapot \n\n"
+					"T -  spawn teapot \n"
+					"Space - move vessel to camera position\n"
+					"N - toggle sky\n\n"
 					
 					"1-4 - switch fractal type\n"
 					"R - return camera to starting location\n"
