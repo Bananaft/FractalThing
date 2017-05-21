@@ -123,7 +123,14 @@ vec4 sdfmap(vec3 pos)
     }
 
     dist = 400. * 0.25*sqrt(mz2/md2)*log(mz2);
+  #elif defined FCTYP_4
 
+    vec4 sdf1 = texture2D(sDiffMap, pos.xz * 0.0016);
+    vec4 sdf2 = texture2D(sDiffMap, pos.yz * 0.0016);
+    vec4 sdf3 = texture2D(sDiffMap, pos.xy * 0.0032) * 320.;
+    dist =  max((- 0.5 + sdf1.r),(0.5 - sdf2.g)) * 160.0;
+    dist =  max(dist,(0.5 - sdf3.b));
+    //dist =  (- 0.5 + sdf2.g) * 160.0;
   #else
     dist = apo(pos, .0274, vec3(1., 1., 1.3), vec3(0.));
   #endif
