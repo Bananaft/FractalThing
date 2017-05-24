@@ -127,10 +127,12 @@ vec4 sdfmap(vec3 pos)
     float scl = 128;
     vec4 sdf1 = texture2D(sDiffMap, pos.xz * 0.0016);
     vec4 sdf2 = texture2D(sDiffMap, pos.yz * 0.0016);
-    vec4 sdf3 = texture2D(sDiffMap, pos.xy * 0.0032) * scl * 2.0;
-    dist =  max((- 0.5 + sdf1.r),(0.5 - sdf2.g)) * scl;
-    dist =  max(dist,(0.5 - sdf3.b));
-    //dist =  (- 0.5 + sdf2.g) * 160.0;
+    vec4 sdf3 = texture2D(sDiffMap, pos.xy * 0.0016);
+
+
+    dist =  max((-0.5 + sdf1.r),(-0.5 + sdf2.g)) * scl;
+    dist =  max(dist,(-0.5 + sdf3.b) * scl);
+   //dist =  (- 0.5 + sdf2.g) * scl;
   #else
     dist = apo(pos, .0274, vec3(1., 1., 1.3), vec3(0.));
   #endif
