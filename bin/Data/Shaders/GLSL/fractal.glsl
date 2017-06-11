@@ -58,6 +58,7 @@ float apo(vec3 pos, float seed,vec3 CSize, vec3 C)
       scale *= k;
       uggg += r2;
       p+=C;
+       p.xyz = vec3(-1.0*p.z,1.0*p.x,1.0*p.y);
       //p *= rot;
   }
   float l = length(p.xy);
@@ -117,6 +118,7 @@ vec4 sdfmap(vec3 pos)
 
       mz2 = dot(z,z);
       if(mz2>4.0) break;
+
       //z.yzw *= rot;
       //z.zwy *= rot;
       //c.yzw *= rot;
@@ -133,6 +135,27 @@ vec4 sdfmap(vec3 pos)
     dist =  max((-0.5 + sdf1.r),(-0.5 + sdf2.g)) * scl;
     dist =  max(dist,(-0.5 + sdf3.b) * scl);
    //dist =  (- 0.5 + sdf2.g) * scl;
+  #elif defined FCTYP_5
+  //float s = p.x;
+  vec4 p = vec4(pos * 0.005,1);
+  vec4 p0 = p;  // p.w is the distance estimate
+
+  for (int i = 0; i < 10; i++)
+  {
+    p.xyz = clamp(p.xyz, -1.0, 1.0) * 2.0 - p.xyz;
+
+    // sphere folding: if (r2 < minRad2) p /= minRad2; else if (r2 < 1.0) p /= r2;
+    float r2 = dot(p.xyz, p.xyz);
+    p *= clamp(max(.012/r2, .004), 0.0, 1.0);
+    //p.xyz = vec3(1.0*p.y,1.0*p.z,1.0*p.x);
+    // scale, translate
+    p = p*vec4(495.4 + pos.y * 0.05) + p0;
+    //p.xyz += vec3(0.077 * p.z,0.33333,0.12);
+  //  p.xyz *= rot;
+  }
+
+  dist = ((length(p.xyz) - 1.577) / p.w - 0.00019) * 200.;
+  //dist = max(dist,-s);
   #else
     dist = apo(pos, .0274, vec3(1., 1., 1.3), vec3(0.));
   #endif

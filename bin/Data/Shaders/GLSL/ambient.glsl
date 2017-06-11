@@ -48,10 +48,12 @@ void PS()
     vec3 col = vec3(0.);
 
     #ifdef FOG
-      vec3 skycol = textureCube(sEnvCubeMap, normalize(vFarRay),9.*(1.-depth2/cFarClipPS)).rgb;
+      float depthclamp = depth2/cFarClipPS;
+      vec3 skycol = textureCube(sEnvCubeMap, normalize(vFarRay),pow((1.-depthclamp)*20.,0.8)).rgb * min(pow(depthclamp,1.1),1.) * 2.;
       vec3 reflcol = textureLod(sEnvCubeMap,mix(normal,bent_normal,final_ao),5.+final_ao*6.).rgb;
       float ndot = max(dot(normal,bent_normal)*0.2+0.8,0.);
       float fog = clamp(pow(depth2/cFarClipPS*6.,1.1),0.,1.);
+      //skycol = pow(skycol,min(depthclamp,1.0));
       col = reflcol * ndot*(final_ao)*(1.-fog)+skycol*fog*4.;
     #endif
     //if (sdfmap(worldPos + bent_normal).w<0.0) col = vec3(1.,0.1,0.02);

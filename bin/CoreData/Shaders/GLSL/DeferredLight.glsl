@@ -113,6 +113,7 @@ void PS()
     vec3 lightDir;
     float lightDist;
     float diff = GetDiffuse(normal, worldPos, lightDir, bentNormalInput.a, lightDist,bent_normal);
+    //diff *= depth;
     //float bentDot = clamp(dot(bent_normal,lightDir),0.,1.);
     //diff *= bentDot;
     vec3 dir = normalize(vFarRay);
@@ -149,7 +150,7 @@ void PS()
     float t = max(maxT - minT,0.);
 
     vol = min(InScatter(cCameraPosPS + dir*minT, dir, cLightPosPS.xyz, t, cLightPosPS.w) * 0.4,64.);
-    //vol = 0.;
+    vol *=  1. - minT/cFarClipPS;
     //  vol = min(InScatter(cCameraPosPS, dir, cLightPosPS.xyz, Z) * 0.5,16.);
 
 
