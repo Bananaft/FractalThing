@@ -136,25 +136,28 @@ vec4 sdfmap(vec3 pos)
     dist =  max(dist,(-0.5 + sdf3.b) * scl);
    //dist =  (- 0.5 + sdf2.g) * scl;
   #elif defined FCTYP_5
-  //float s = p.x;
+
+  const float boxScale = 0.9;
+  const float sphereScale = 1.0;
+  const float boxFold = 0.917;
+  float mR2 = boxScale * boxScale;    // Min radius
+  float fR2 = sphereScale * mR2;      // Fixed radius
+
   vec4 p = vec4(pos * 0.005,1);
   vec4 p0 = p;  // p.w is the distance estimate
 
   for (int i = 0; i < 10; i++)
   {
-    p.xyz = clamp(p.xyz, -1.0, 1.0) * 2.0 - p.xyz;
+    p.xyz = clamp(p.xyz, -boxFold, boxFold) * 2.0 * boxFold - p.xyz;  // box fold
 
-    // sphere folding: if (r2 < minRad2) p /= minRad2; else if (r2 < 1.0) p /= r2;
-    float r2 = dot(p.xyz, p.xyz);
-    p *= clamp(max(.012/r2, .004), 0.0, 1.0);
-    //p.xyz = vec3(1.0*p.y,1.0*p.z,1.0*p.x);
-    // scale, translate
-    p = p*vec4(495.4 + pos.y * 0.05) + p0;
-    //p.xyz += vec3(0.077 * p.z,0.33333,0.12);
-  //  p.xyz *= rot;
+    float d = dot(p.xyz, p.xyz);
+    p.xyzw *= clamp(max(fR2 / d, mR2), 0.0, 1.0);  // sphere fold
+
+    p.xyzw = p * vec4(vec3(-2.81),2.81) + p0;
+
   }
 
-  dist = ((length(p.xyz) - 1.577) / p.w - 0.00019) * 200.;
+  dist = ((length(p.xyz) - 0.1) / p.w - 0.00019) * 200.;
   //dist = max(dist,-s);
   #else
     dist = apo(pos, .0274, vec3(1., 1., 1.3), vec3(0.));
