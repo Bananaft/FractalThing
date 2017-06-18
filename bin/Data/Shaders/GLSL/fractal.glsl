@@ -159,6 +159,35 @@ vec4 sdfmap(vec3 pos)
 
   dist = ((length(p.xyz) - 0.1) / p.w - 0.00019) * 200.;
   //dist = max(dist,-s);
+  #elif defined FCTYP_6
+      vec4 p = vec4(pos * 0.005,1);
+      vec4 p0 = p;  // p.w is the distance estimate
+
+      for (int i = 0; i < 10; i++)
+      {
+      p.xyz = clamp(p.xyz, -1.0, 1.0) * 2.0 - p.xyz;
+
+      // sphere folding: if (r2 < minRad2) p /= minRad2; else if (r2 < 1.0) p /= r2;
+      float r2 = dot(p.xyz, p.xyz);
+      p *= clamp(max(.012/r2, .004), 0.0, 1.0);
+      //p.xyz = vec3(1.0*p.y,1.0*p.z,1.0*p.x);
+      // scale, translate
+      p = p*vec4(495.4 + pos.y * 0.05) + p0;
+      //p.xyz += vec3(0.077 * p.z,0.33333,0.12);
+      //  p.xyz *= rot;
+      }
+
+      dist = ((length(p.xyz) - max(-42.577-pos.y * 0.067,1.557)) / p.w - 0.00019) * 200.;
+  #elif defined FCTYP_7
+    vec3 p = pos * 0.0002;
+    vec4 q = vec4(p - 1.0, 1);
+    for(int i = 0; i < 11; i++) {
+      q.xyz = abs(q.xyz + 1.0) - 1.0;
+      q /= clamp(dot(q.xyz, q.xyz), 0.12, 1.0);
+      q *= 1.837;// + p.y*0.8;
+    }
+    dist = (length(q.xz) - 1.2)/q.w * 5000.;
+
   #else
     dist = apo(pos, .0274, vec3(1., 1., 1.3), vec3(0.));
   #endif
