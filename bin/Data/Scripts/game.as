@@ -3,10 +3,12 @@ Scene@ scene_;
 bool wireframe =false;
 bool fpscap =false;
 bool fog = true;
+bool sdfdebug = false;
 String  fractaltyp = " ";
 //uint fctype = 0;
 RenderPath@ renderpath;
 
+Node@ testplane;
 Node@ veh;
 Node@ cameraNode;
 Node@ fakeboxNode;
@@ -103,14 +105,15 @@ void SetupScene()
 	renderer.viewports[0] = mainVP;
 	
 	//*
-	Node@ testplane = cameraNode.CreateChild("testNode");
+	testplane = scene_.CreateChild("testNode");
 	StaticModel@ testPlaneModel = testplane.CreateComponent("StaticModel");
 	testPlaneModel.model = cache.GetResource("Model", "Models/Plane.mdl");
 	Material@ testpanelMat = cache.GetResource("Material", "Materials/testPlane.xml");
 	testPlaneModel.material = testpanelMat;
-	testplane.position = Vector3(0.,-2.,100);
-	testplane.Rotate(Quaternion(-90.,0.,0.));
-	testplane.scale = Vector3(100.,100.,100.);
+	testplane.position = Vector3(0.,0.,0.);
+	testplane.Rotate(Quaternion(0.,0.,0.));
+	testplane.scale = Vector3(100000.,100000.,100000.);
+	testplane.enabled = false;
 	//*/
 	
 	
@@ -222,6 +225,20 @@ void HandleKeyDown(StringHash eventType, VariantMap& eventData)
 			setRndCommandParam(fractaltyp);
 		}
 
+	} else if (key == KEY_G)
+	{
+
+		if (sdfdebug){
+			sdfdebug = false;
+			setRndCommandParam(fractaltyp);
+			testplane.enabled = false;
+		} else {
+			
+			sdfdebug = true;
+			setRndCommandParam(fractaltyp);
+			testplane.enabled = true;
+		}
+
 	} else if (key == KEY_SPACE)
 	{
 		veh.position = cameraNode.position;
@@ -300,8 +317,6 @@ void setRndCommandParam(String param)
 	renderpath = renderer.viewports[0].renderPath.Clone();
 	RenderPathCommand rpc;
 	
-	
-	
 	for (int i=3; i<7; i++)
 	{
 		rpc = renderpath.commands[i];
@@ -313,6 +328,8 @@ void setRndCommandParam(String param)
 	renderpath.commands[7] = rpc;
 	
 	if (fog) param += " FOG";
+	if (sdfdebug) param += " SDFFEBUG";
+	
 	rpc = renderpath.commands[8];
 	rpc.pixelShaderDefines = "DEFERRED "  + param;
 	renderpath.commands[8] = rpc;

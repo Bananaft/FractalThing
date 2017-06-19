@@ -7,7 +7,7 @@
 
 #define PI acos(-1.)
 vec3 distanceMeter(float dist, float rayLength, vec3 wP) {
-    float idealGridDistance = 20.0/rayLength;
+    float idealGridDistance = 100./rayLength;
     float nearestBase = floor(log(idealGridDistance)/log(10.));
     //float relativeDist = abs(dist/camHeight);
 
@@ -21,28 +21,34 @@ vec3 distanceMeter(float dist, float rayLength, vec3 wP) {
     //    col = col.grb*3.;
     //}
 
-    float l0 = (pow(0.5+0.5*cos(dist*PI*2.*smallerDistance),10.0));
-    float l1 = (pow(0.5+0.5*cos(dist*PI*2.*largerDistance),10.0));
+    float l0 = (pow(0.5+0.5*sin(dist*PI*2.*smallerDistance),10.0));
+    float l1 = (pow(0.5+0.5*sin(dist*PI*2.*largerDistance),10.0));
 
     float x = fract(log(idealGridDistance)/log(10.));
     l0 = mix(l0,0.,smoothstep(0.5,1.0,x));
     l1 = mix(0.,l1,smoothstep(0.0,0.5,x));
 
-    float grid = (pow(0.5+0.5*cos(((0.5-fract(wP.x*0.1))*(0.5-fract(wP.z*0.1)))*PI*2.*smallerDistance),1000.0));
+    float grid = (pow(0.5+0.5*cos(((0.5-fract(wP.x*0.1))*(0.5-fract(wP.z*0.1)))*PI*2.),1000.0));
 
     col.rgb *= 0.1+0.9*(1.-l0)*(1.-l1);
-    col.gb *= grid;
+    col.gb *= 1.-grid * 0.6;
     return col;
 }
 
 varying vec2 vScreenPos;
 varying vec3 vFarRay;
+#ifdef SDFFEBUG
+  varying vec3 fwd;
+#endif
 
 void VS()
 {
     mat4 modelMatrix = iModelMatrix;
     vec3 worldPos = GetWorldPos(modelMatrix);
     gl_Position = GetClipPos(worldPos);
+    #ifdef SDFFEBUG
+      fwd = vec3(0.0,0.0,1.0) *  GetCameraRot();
+    #endif
 
     vScreenPos = GetScreenPosPreDiv(gl_Position);
     vFarRay = GetFarRay(gl_Position);
@@ -87,9 +93,23 @@ void PS()
     #endif
     //if (sdfmap(worldPos + bent_normal).w<0.0) col = vec3(1.,0.1,0.02);
     //if (final_ao > 0.8) col = vec3(1.,0.,0.); else col = vec3(final_ao);
-
-    float dist = sdfmap(worldPos).w;
-    col = distanceMeter(dist,depth2,worldPos) * 0.1;
+    #ifdef SDFFEBUG
+      float dist = sdfmap(worldPos).w;
+      col *= distanceMeter(dist,depth2,worldPos) * 1.0;
+      vec3 cprj = cCameraPosPS;
+      vec3 fwdprj = fwd.xyz;
+      cprj.y = 0.;
+      fwdprj.y = 0;
+      fwdprj = normalize(fwdprj);
+      float check = 0.;
+      for (int i = 0; i<12; i++)
+      {
+        check = sdfmap(cprj).w;
+        float rad = length(worldPos-cprj);
+        if (rad<check) col *= 2. * vec3(0.4,1.0,0.2);
+        cprj += fwdprj * check;// * fwdprj;//vec3(0.,0.,1.) *
+      }
+    #endif
     //col = 1.-col;
 
 
