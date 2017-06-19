@@ -28,27 +28,27 @@ vec3 distanceMeter(float dist, float rayLength, vec3 wP) {
     l0 = mix(l0,0.,smoothstep(0.5,1.0,x));
     l1 = mix(0.,l1,smoothstep(0.0,0.5,x));
 
-    float grid = (pow(0.5+0.5*cos(((0.5-fract(wP.x*0.1))*(0.5-fract(wP.z*0.1)))*PI*2.),1000.0));
+    //float grid = (pow(0.5+0.5*cos(((0.5-fract(wP.x*0.1))*(0.5-fract(wP.z*0.1)))*PI*2.),1000.0));
 
     col.rgb *= 0.1+0.9*(1.-l0)*(1.-l1);
-    col.gb *= 1.-grid * 0.6;
+    //col.gb *= 1.-grid * 0.6;
     return col;
 }
 
 varying vec2 vScreenPos;
 varying vec3 vFarRay;
-#ifdef SDFFEBUG
+//#ifdef SDFFEBUG
   varying vec3 fwd;
-#endif
+//#endif
 
 void VS()
 {
     mat4 modelMatrix = iModelMatrix;
     vec3 worldPos = GetWorldPos(modelMatrix);
     gl_Position = GetClipPos(worldPos);
-    #ifdef SDFFEBUG
+    //#ifdef SDFFEBUG
       fwd = vec3(0.0,0.0,1.0) *  GetCameraRot();
-    #endif
+    //#endif
 
     vScreenPos = GetScreenPosPreDiv(gl_Position);
     vFarRay = GetFarRay(gl_Position);
@@ -95,7 +95,7 @@ void PS()
     //if (final_ao > 0.8) col = vec3(1.,0.,0.); else col = vec3(final_ao);
     #ifdef SDFFEBUG
       float dist = sdfmap(worldPos).w;
-      col *= distanceMeter(dist,depth2,worldPos) * 1.0;
+      col *= distanceMeter(dist,depth2,worldPos) *(1.-fog) + fog;
       vec3 cprj = cCameraPosPS;
       vec3 fwdprj = fwd.xyz;
       cprj.y = 0.;
@@ -106,7 +106,7 @@ void PS()
       {
         check = sdfmap(cprj).w;
         float rad = length(worldPos-cprj);
-        if (rad<check) col *= 2. * vec3(0.4,1.0,0.2);
+        if (rad<check && check<(rad+15.)) col *= 3. * normalize(vec3(.5+.5*sin(i*10.),0.4,.5+.5*cos(i*10.)));
         cprj += fwdprj * check;// * fwdprj;//vec3(0.,0.,1.) *
       }
     #endif
